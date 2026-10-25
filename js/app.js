@@ -404,6 +404,37 @@
       h("div", { class: "map-scroll" }, svg));
   }
 
+  // Boîtes de dialogue intégrées (remplacent confirm() / prompt()).
+  function ask(message, opts) {
+    opts = opts || {};
+    const dlg = document.getElementById("sheet");
+    return new Promise((resolve) => {
+      let input = null;
+      if (opts.input) {
+        input = h("input", { type: "text", id: "ask-input", placeholder: opts.placeholder || "" });
+      }
+      const done = (val) => { dlg.removeEventListener("close", onClose); dlg.close(); resolve(val); };
+      const onClose = () => resolve(opts.input ? null : false);
+      dlg.addEventListener("close", onClose);
+      dlg.replaceChildren(
+        h("form", { class: "sheet-body", onsubmit: (e) => {
+          e.preventDefault();
+          if (input) { const v = input.value.trim(); if (v) done(v); } else done(true);
+        } },
+          h("div", { class: "sheet-grip" }),
+          h("h3", null, message),
+          input ? h("label", { class: "field" }, input) : null,
+          h("div", { class: "sheet-actions" },
+            h("button", { type: "button", class: "btn ghost", onclick: () => done(opts.input ? null : false) }, "Annuler"),
+            h("button", { type: "submit", class: "btn" + (opts.danger ? " danger-fill" : "") }, opts.ok || "OK"),
+          ),
+        ),
+      );
+      if (!dlg.open) dlg.showModal();
+      if (input) input.focus();
+    });
+  }
+
   // ---------------------------------------------------------------------
   // Actions
   // ---------------------------------------------------------------------
@@ -424,9 +455,9 @@
     });
   }
 
-  function markFloor(museum, floor, rooms, st) {
+  async function markFloor(museum, floor, rooms, st) {
     const msg = st === 2 ? `Marquer les ${rooms.length} salles de « ${floor.name} » comme vues ?` : `Remettre toutes les salles de « ${floor.name} » à « pas vu » ? (les notes sont conservées)`;
-    if (!confirm(msg)) return;
+    if (!(await ask(msg, { ok: st === 2 ? "Tout marquer vu" : "Réinitialiser", danger: st !== 2 }))) return;
     const backup = {};
     for (const r of rooms) {
       const k = key(museum, r);
@@ -446,8 +477,8 @@
     });
   }
 
-  function addCustomRoom(museum, floor) {
-    const title = prompt("Nom de la salle (ex. « Saal 12 – Rubens ») :");
+  async function addCustomRoom(museum, floor) {
+    const title = await ask(`Ajouter une salle à « ${floor.name} »`, { input: true, placeholder: "ex. Saal 12 – Rubens", ok: "Ajouter" });
     if (!title || !title.trim()) return;
     const fk = floorKey(museum, floor);
     const list = state.custom[fk] || (state.custom[fk] = []);
@@ -501,13 +532,13 @@
         h("label", { class: "field" }, h("span", null, "Date de visite"), date),
         h("label", { class: "field" }, h("span", null, "Note"), note),
         h("div", { class: "sheet-actions" },
-          room.custom ? h("button", { type: "button", class: "btn ghost danger", onclick: () => {
-            if (!confirm(`Supprimer la salle « ${room.title} » ?`)) return;
+          room.custom ? h("button", { type: "button", class: "btn ghost danger", onclick: async () => {
+            if (!(await ask(`Supprimer la salle « ${room.title} » ?`, { ok: "Supprimer", danger: true }))) return;
             const fk = floorKey(museum, floor);
             state.custom[fk] = (state.custom[fk] || []).filter((c) => c.id !== room.id);
             if (!state.custom[fk].length) delete state.custom[fk];
             delete state.rooms[k];
-            save(); close(); rerender();
+            save(); rerender();
           } }, "Supprimer") : null,
           h("button", { type: "button", class: "btn ghost", onclick: close }, "Annuler"),
           h("button", { type: "submit", class: "btn" }, "Enregistrer"),
@@ -533,10 +564,9 @@
       try {
         const data = JSON.parse(await f.text());
         if (!data || typeof data.rooms !== "object") throw new Error("format");
-        if (!confirm("Remplacer votre progression actuelle par celle du fichier ?")) return;
+        if (!(await ask("Remplacer votre progression actuelle par celle du fichier ?", { ok: "Remplacer", danger: true }))) return;
         state = { ...emptyState(), ...data, prefs: { ...emptyState().prefs, ...(data.prefs || {}) } };
         save();
-        dlg.close();
         rerender();
         toast("Sauvegarde importée");
       } catch (e) {
@@ -556,10 +586,10 @@
           h("button", { class: "btn", onclick: exportData }, "Exporter ma progression"),
           h("button", { class: "btn ghost", onclick: () => file.click() }, "Importer une sauvegarde"),
           file,
-          h("button", { class: "btn ghost danger", onclick: () => {
-            if (!confirm("Effacer toute la progression, les notes et les salles ajoutées ?")) return;
+          h("button", { class: "btn ghost danger", onclick: async () => {
+            if (!(await ask("Effacer toute la progression, les notes et les salles ajoutées ?", { ok: "Tout effacer", danger: true }))) return;
             state = { ...emptyState(), prefs: state.prefs };
-            save(); dlg.close(); rerender();
+            save(); rerender();
           } }, "Tout effacer"),
         ),
         h("div", { class: "sheet-actions" }, h("button", { class: "btn ghost", onclick: () => dlg.close() }, "Fermer")),

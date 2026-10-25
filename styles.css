@@ -13,12 +13,13 @@
   --seen-stroke: #2a7148;
   --seen-ink: #ffffff;
   --court: #ebe7de;
+  --danger: #c0392b;
   --shadow: 0 1px 2px rgba(0, 0, 0, .06), 0 2px 8px rgba(0, 0, 0, .05);
   color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --bg: #14191d;
     --surface: #1e252b;
     --ink: #e9ecee;
@@ -34,6 +35,22 @@
     --shadow: none;
     color-scheme: dark;
   }
+}
+:root[data-theme="dark"] {
+  --bg: #14191d;
+  --surface: #1e252b;
+  --ink: #e9ecee;
+  --muted: #9aa5ad;
+  --line: #34404a;
+  --none-fill: #262f36;
+  --none-stroke: #4b5964;
+  --partial-fill: #b8902b;
+  --partial-stroke: #e0b648;
+  --seen-fill: #2f7d50;
+  --seen-stroke: #55b47d;
+  --court: #1a2025;
+  --shadow: none;
+  color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
@@ -177,7 +194,8 @@ button { font: inherit; color: inherit; }
 }
 .btn.small { padding: 7px 12px; min-height: 36px; font-size: .88rem; }
 .btn.ghost { background: transparent; color: var(--ink); border-color: var(--line); }
-.btn.danger { color: #c0392b; }
+.btn.danger { color: var(--danger); }
+.btn.danger-fill { background: var(--danger); border-color: var(--danger); color: #fff; }
 .btn.add { width: 100%; margin-top: 12px; }
 
 .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
