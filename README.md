@@ -7,11 +7,13 @@ cocher les salles déjà vues dans les musées inclus dans la
 ## Fonctionnalités
 
 - Un plan schématique interactif par étage pour chaque musée : touchez une
-  salle pour la marquer **vue**, **vue en partie** ou **pas vue**, avec date
-  et note.
+  salle pour la cocher comme **vue**, retouchez pour la décocher. Le bouton ✎
+  dans la liste permet d'ajouter une note ou de changer la date.
+- Boutons pour cocher d'un coup toute une partie (ex. Kunstkammer), tout un
+  étage ou tout le musée, avec « Annuler ».
 - Liste des salles avec filtre « À voir » pour préparer la prochaine visite.
 - Progression par étage, par musée et globale.
-- Mode rapide (un toucher = vu), bouton pour agrandir le plan, annulation.
+- Bouton pour agrandir le plan sur petit écran.
 - Ajout de vos propres salles à n'importe quel étage.
 - Export / import de la progression (fichier JSON) pour changer d'appareil.
 - Installable sur l'écran d'accueil (PWA) et utilisable sans réseau.

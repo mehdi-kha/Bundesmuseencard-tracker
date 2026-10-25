@@ -1,5 +1,5 @@
 // Cache hors-ligne : l'appli fonctionne même sans réseau dans les musées.
-const CACHE = "bmc-tracker-v2";
+const CACHE = "bmc-tracker-v3";
 const ASSETS = [
   "./", "index.html", "styles.css", "js/data.js", "js/app.js",
   "manifest.webmanifest", "icon.svg", "icon-192.png", "icon-512.png",

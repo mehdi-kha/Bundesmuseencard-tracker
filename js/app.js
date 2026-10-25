@@ -5,18 +5,11 @@
   const MUSEUMS = window.MUSEUMS;
   const SVG_NS = "http://www.w3.org/2000/svg";
 
-  // Statuts : 0 = pas vu, 1 = en partie, 2 = vu.
-  const STATUS = [
-    { key: "none", label: "Pas vu" },
-    { key: "partial", label: "En partie" },
-    { key: "seen", label: "Vu" },
-  ];
-
   // ---------------------------------------------------------------------
   // État persistant
   // ---------------------------------------------------------------------
   function emptyState() {
-    return { rooms: {}, custom: {}, prefs: { quick: false, zoom: false } };
+    return { rooms: {}, custom: {}, prefs: { zoom: false } };
   }
 
   function loadState() {
@@ -42,17 +35,22 @@
 
   const key = (museum, room) => museum.id + "/" + room.id;
   const floorKey = (museum, floor) => museum.id + "/" + floor.id;
-  const getStatus = (museum, room) => (state.rooms[key(museum, room)] || {}).s || 0;
+  // Une salle est vue ou pas vue. (Les anciennes salles « en partie »
+  // des premières versions comptent comme vues.)
+  const isSeen = (museum, room) => !!(state.rooms[key(museum, room)] || {}).s;
 
-  function setStatus(museum, room, s) {
+  function setSeen(museum, room, seen) {
     const k = key(museum, room);
     const entry = { ...(state.rooms[k] || {}) };
-    entry.s = s;
-    if (s > 0 && !entry.d) entry.d = today();
-    if (s === 0) delete entry.d;
+    if (seen) {
+      entry.s = 2;
+      if (!entry.d) entry.d = today();
+    } else {
+      delete entry.s;
+      delete entry.d;
+    }
     if (!entry.s && !entry.n) delete state.rooms[k];
     else state.rooms[k] = entry;
-    save();
   }
 
   function today() {
@@ -77,18 +75,23 @@
     return museum.floors.flatMap((f) => floorRooms(museum, f));
   }
 
-  // Une salle "en partie" compte pour moitié.
   function progress(museum, rooms) {
     rooms = rooms || allRooms(museum);
-    let seen = 0, partial = 0;
-    for (const r of rooms) {
-      const s = getStatus(museum, r);
-      if (s === 2) seen++;
-      else if (s === 1) partial++;
-    }
+    const seen = rooms.filter((r) => isSeen(museum, r)).length;
     const total = rooms.length;
-    const pct = total ? Math.round(((seen + partial / 2) / total) * 100) : 0;
-    return { seen, partial, total, pct };
+    return { seen, total, pct: total ? Math.round((seen / total) * 100) : 0 };
+  }
+
+  // Regroupe les salles d'un étage par partie (champ `section` des données).
+  function sections(rooms) {
+    const groups = [];
+    for (const r of rooms) {
+      const name = r.custom ? "Salles ajoutées" : r.section || "";
+      let g = groups.find((x) => x.name === name);
+      if (!g) groups.push((g = { name, rooms: [] }));
+      g.rooms.push(r);
+    }
+    return groups;
   }
 
   // ---------------------------------------------------------------------
@@ -122,12 +125,7 @@
 
   function progressBar(p) {
     const bar = h("div", { class: "bar", role: "progressbar", "aria-valuemin": 0, "aria-valuemax": 100, "aria-valuenow": p.pct });
-    const seenW = p.total ? (p.seen / p.total) * 100 : 0;
-    const partW = p.total ? (p.partial / p.total) * 100 : 0;
-    bar.append(
-      h("span", { class: "bar-seen", style: `width:${seenW}%` }),
-      h("span", { class: "bar-partial", style: `width:${partW}%` }),
-    );
+    bar.append(h("span", { class: "bar-seen", style: `width:${p.pct}%` }));
     return bar;
   }
 
@@ -173,9 +171,9 @@
   function renderHome(app) {
     document.title = "Bundesmuseen-Card – Suivi";
     const all = MUSEUMS.map((m) => progress(m));
-    const tot = all.reduce((a, p) => ({ seen: a.seen + p.seen, partial: a.partial + p.partial, total: a.total + p.total }), { seen: 0, partial: 0, total: 0 });
-    tot.pct = tot.total ? Math.round(((tot.seen + tot.partial / 2) / tot.total) * 100) : 0;
-    const started = all.filter((p) => p.seen + p.partial > 0).length;
+    const tot = all.reduce((a, p) => ({ seen: a.seen + p.seen, total: a.total + p.total }), { seen: 0, total: 0 });
+    tot.pct = tot.total ? Math.round((tot.seen / tot.total) * 100) : 0;
+    const started = all.filter((p) => p.seen > 0).length;
 
     const groups = [];
     for (const m of MUSEUMS) {
@@ -193,7 +191,7 @@
         h("p", { class: "sub" }, `Bundesmuseen-Card · ${started}/${MUSEUMS.length} sites commencés`),
         h("div", { class: "summary" },
           h("strong", null, `${tot.pct} %`),
-          h("span", null, ` · ${tot.seen} salle${tot.seen > 1 ? "s" : ""} vue${tot.seen > 1 ? "s" : ""}${tot.partial ? `, ${tot.partial} en partie` : ""} sur ${tot.total}`),
+          h("span", null, ` · ${tot.seen} salle${tot.seen > 1 ? "s" : ""} vue${tot.seen > 1 ? "s" : ""} sur ${tot.total}`),
         ),
         progressBar(tot),
       ),
@@ -208,7 +206,7 @@
                   h("span", { class: "card-title" }, m.name),
                   h("span", { class: "card-pct" + (p.pct === 100 ? " done" : "") }, p.pct === 100 ? "✓ 100 %" : `${p.pct} %`),
                 ),
-                h("div", { class: "card-meta" }, `${p.seen}/${p.total} salles vues${p.partial ? ` · ${p.partial} en partie` : ""}`),
+                h("div", { class: "card-meta" }, `${p.seen}/${p.total} salles vues`),
                 progressBar(p),
               );
             }),
@@ -244,12 +242,9 @@
           }))
       : null;
 
-    const filtered = rooms.filter((r) => {
-      const st = getStatus(museum, r);
-      if (listFilter === "todo") return st < 2;
-      if (listFilter === "seen") return st > 0;
-      return true;
-    });
+    const visible = (r) => listFilter === "todo" ? !isSeen(museum, r) : listFilter === "seen" ? isSeen(museum, r) : true;
+    const groups = sections(rooms).map((g) => ({ ...g, shown: g.rooms.filter(visible) })).filter((g) => g.shown.length);
+    const allMuseum = allRooms(museum);
 
     app.replaceChildren(
       h("header", { class: "top", style: `--accent:${museum.color}` },
@@ -262,7 +257,7 @@
         museum.note ? h("p", { class: "note" }, museum.note) : null,
         h("div", { class: "summary" },
           h("strong", null, `${p.pct} %`),
-          h("span", null, ` · ${p.seen}/${p.total} salles vues${p.partial ? `, ${p.partial} en partie` : ""}`),
+          h("span", null, ` · ${p.seen}/${p.total} salles vues`),
         ),
         progressBar(p),
       ),
@@ -274,18 +269,8 @@
             h("span", { class: "floor-pct" }, `${fp.seen}/${fp.total}`),
           ),
           renderMap(museum, floor, rooms),
-          h("div", { class: "legend" },
-            h("span", null, h("i", { class: "sw sw-none" }), "Pas vu"),
-            h("span", null, h("i", { class: "sw sw-partial" }), "En partie"),
-            h("span", null, h("i", { class: "sw sw-seen" }), "Vu"),
-          ),
-          h("p", { class: "hint" }, state.prefs.quick
-            ? "Touchez une salle pour la marquer vue / pas vue."
-            : "Touchez une salle pour changer son statut ou ajouter une note."),
-          h("div", { class: "floor-actions" },
-            h("button", { class: "btn small", onclick: () => markFloor(museum, floor, rooms, 2) }, "Tout l'étage vu"),
-            h("button", { class: "btn small ghost", onclick: () => markFloor(museum, floor, rooms, 0) }, "Tout réinitialiser"),
-          ),
+          h("p", { class: "hint" }, "Touchez une salle pour la cocher comme vue, retouchez pour la décocher."),
+          bulkButton(museum, rooms, "l'étage", "btn"),
         ),
         h("section", { class: "list" },
           h("div", { class: "list-head" },
@@ -295,30 +280,68 @@
                 h("button", { class: listFilter === k ? "on" : "", "aria-pressed": String(listFilter === k), onclick: () => { listFilter = k; rerender(); } }, l)),
             ),
           ),
-          filtered.length
-            ? h("ul", { class: "rooms" }, filtered.map((r) => roomRow(museum, floor, r)))
+          groups.length
+            ? groups.map((g) => h("div", { class: "section" },
+                g.name ? h("div", { class: "section-head" },
+                  h("h3", null, g.name, h("small", null, ` ${progress(museum, g.rooms).seen}/${g.rooms.length}`)),
+                  bulkButton(museum, g.rooms, "la partie", "btn small ghost"),
+                ) : null,
+                h("ul", { class: "rooms" }, g.shown.map((r) => roomRow(museum, floor, r, shortTitle(r, g)))),
+              ))
             : h("p", { class: "empty" }, listFilter === "todo" ? "Tout est vu à cet étage 🎉" : "Aucune salle."),
           h("button", { class: "btn ghost add", onclick: () => addCustomRoom(museum, floor) }, "+ Ajouter une salle à cet étage"),
+        ),
+        h("section", { class: "museum-actions" },
+          bulkButton(museum, allMuseum, "tout le musée", "btn ghost wide"),
         ),
       ),
     );
   }
 
-  function roomRow(museum, floor, room) {
-    const st = getStatus(museum, room);
+  // Bouton « tout cocher » / « tout décocher » pour un ensemble de salles.
+  function bulkButton(museum, rooms, what, cls) {
+    const all = rooms.length > 0 && rooms.every((r) => isSeen(museum, r));
+    return h("button", {
+      class: cls + (all ? " ghost" : ""),
+      onclick: () => markAll(museum, rooms, !all, what),
+    }, all ? `Décocher ${what}` : `✓ Marquer ${what} comme vu${what.startsWith("la") ? "e" : ""}`);
+  }
+
+  // Dans une partie, retire le thème répété partout (« Saal I – Kunstkammer »
+  // devient « Saal I ») mais garde les thèmes particuliers (« Saal X – Bruegel »).
+  function shortTitle(room, group) {
+    if (!group.name || room.custom) return room.title;
+    if (!group.common) {
+      const counts = {};
+      for (const r of group.rooms) {
+        const suffix = r.title.split(" – ")[1];
+        if (suffix) counts[suffix] = (counts[suffix] || 0) + 1;
+      }
+      const best = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+      group.common = best && best[1] > 1 ? best[0] : "-";
+    }
+    const [head, suffix] = room.title.split(" – ");
+    return suffix === group.common ? head : room.title;
+  }
+
+  function roomRow(museum, floor, room, title) {
+    const seen = isSeen(museum, room);
     const entry = state.rooms[key(museum, room)] || {};
-    return h("li", { class: `room st-${STATUS[st].key}` },
+    const meta = [seen && entry.d ? `Vue le ${formatDate(entry.d)}` : null, entry.n].filter(Boolean).join(" · ");
+    return h("li", { class: "room" + (seen ? " seen" : "") },
       h("button", {
-        class: "check",
-        "aria-label": `${room.title} : ${STATUS[st].label}. Marquer ${st === 2 ? "pas vue" : "vue"}`,
+        class: "room-toggle",
+        role: "checkbox",
+        "aria-checked": String(seen),
         onclick: () => toggle(museum, room),
-      }, st === 2 ? "✓" : st === 1 ? "½" : ""),
-      h("button", { class: "room-main", onclick: () => openRoom(museum, floor, room) },
-        h("span", { class: "room-title" }, room.title, room.custom ? h("em", null, " (perso)") : null),
-        entry.d || entry.n
-          ? h("span", { class: "room-meta" }, [entry.d ? `${st === 1 ? "Commencée" : "Vue"} le ${formatDate(entry.d)}` : null, entry.n].filter(Boolean).join(" · "))
-          : null,
+      },
+        h("span", { class: "check", "aria-hidden": "true" }, seen ? "✓" : ""),
+        h("span", { class: "room-text" },
+          h("span", { class: "room-title" }, title || room.title, room.custom ? h("em", null, " (perso)") : null),
+          meta ? h("span", { class: "room-meta" }, meta) : null,
+        ),
       ),
+      h("button", { class: "room-edit", "aria-label": `Note et date : ${room.title}`, onclick: () => openRoom(museum, floor, room) }, "✎"),
     );
   }
 
@@ -367,18 +390,18 @@
     }
 
     for (const it of L.items) {
-      const st = getStatus(museum, it.r);
+      const seen = isSeen(museum, it.r);
       const pad = 0.5;
       const g = s("g", {
-        class: `cell st-${STATUS[st].key}`,
+        class: "cell" + (seen ? " seen" : ""),
         tabindex: 0,
-        role: "button",
-        "aria-label": `${it.r.title} : ${STATUS[st].label}`,
+        role: "checkbox",
+        "aria-checked": String(seen),
+        "aria-label": it.r.title,
       });
       const activate = (e) => {
         e.preventDefault();
-        if (state.prefs.quick) toggle(museum, it.r);
-        else openRoom(museum, floor, it.r);
+        toggle(museum, it.r);
       };
       g.addEventListener("click", activate);
       g.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") activate(e); });
@@ -389,7 +412,7 @@
       const fs = Math.min(5, it.h * 0.42, (it.w * 1.7) / Math.max(text.length, 2));
       const t = s("text", { x: it.x + it.w / 2, y: it.y + it.h / 2, "font-size": fs.toFixed(2) }, text);
       g.append(t);
-      if (st === 2 && it.h > 9) {
+      if (seen && it.h > 9) {
         g.append(s("text", { x: it.x + it.w - 2, y: it.y + 3.2, class: "tick", "font-size": 3 }, "✓"));
       }
       svg.append(g);
@@ -439,33 +462,23 @@
   // Actions
   // ---------------------------------------------------------------------
   function toggle(museum, room) {
-    const prev = getStatus(museum, room);
-    const next = prev === 2 ? 0 : 2;
-    const prevEntry = state.rooms[key(museum, room)] ? { ...state.rooms[key(museum, room)] } : null;
-    setStatus(museum, room, next);
+    setSeen(museum, room, !isSeen(museum, room));
+    save();
+    if (navigator.vibrate) { try { navigator.vibrate(12); } catch (e) { /* ignoré */ } }
     rerender();
-    toast(`${room.label || room.title} : ${STATUS[next].label.toLowerCase()}`, {
-      label: "Annuler",
-      fn: () => {
-        if (prevEntry) state.rooms[key(museum, room)] = prevEntry;
-        else delete state.rooms[key(museum, room)];
-        save();
-        rerender();
-      },
-    });
   }
 
-  async function markFloor(museum, floor, rooms, st) {
-    const msg = st === 2 ? `Marquer les ${rooms.length} salles de « ${floor.name} » comme vues ?` : `Remettre toutes les salles de « ${floor.name} » à « pas vu » ? (les notes sont conservées)`;
-    if (!(await ask(msg, { ok: st === 2 ? "Tout marquer vu" : "Réinitialiser", danger: st !== 2 }))) return;
+  // Coche ou décoche un ensemble de salles, avec possibilité d'annuler.
+  function markAll(museum, rooms, seen, what) {
     const backup = {};
     for (const r of rooms) {
       const k = key(museum, r);
       backup[k] = state.rooms[k] ? { ...state.rooms[k] } : null;
-      setStatus(museum, r, st);
+      setSeen(museum, r, seen);
     }
+    save();
     rerender();
-    toast("Étage mis à jour", {
+    toast(seen ? `${what[0].toUpperCase() + what.slice(1)} : ${rooms.length} salles vues` : `${what[0].toUpperCase() + what.slice(1)} : décoché`, {
       label: "Annuler",
       fn: () => {
         for (const [k, v] of Object.entries(backup)) {
@@ -496,20 +509,18 @@
     const dlg = document.getElementById("sheet");
     const k = key(museum, room);
     const entry = state.rooms[k] || {};
-    const st = entry.s || 0;
+    const seen = !!entry.s;
 
-    const note = h("textarea", { id: "room-note", rows: 3, placeholder: "Note (ex. vu rapidement, à refaire avec audioguide…)" });
+    const note = h("textarea", { id: "room-note", rows: 3, placeholder: "Note (ex. à refaire avec l'audioguide…)" });
     note.value = entry.n || "";
     const date = h("input", { type: "date", id: "room-date", value: entry.d || "" });
 
     const close = () => dlg.close();
-    const commit = (newStatus) => {
+    const commit = () => {
       const e = { ...(state.rooms[k] || {}) };
       const n = note.value.trim();
       if (n) e.n = n; else delete e.n;
-      e.s = newStatus;
-      if (newStatus > 0) e.d = date.value || e.d || today();
-      else delete e.d;
+      if (e.s && date.value) e.d = date.value;
       if (!e.s && !e.n) delete state.rooms[k]; else state.rooms[k] = e;
       save();
       close();
@@ -517,19 +528,11 @@
     };
 
     dlg.replaceChildren(
-      h("form", { method: "dialog", class: "sheet-body", onsubmit: (e) => { e.preventDefault(); commit(getStatus(museum, room)); } },
+      h("form", { class: "sheet-body", onsubmit: (e) => { e.preventDefault(); commit(); } },
         h("div", { class: "sheet-grip" }),
-        h("p", { class: "sheet-kicker" }, `${museum.short} · ${floor.name}`),
+        h("p", { class: "sheet-kicker" }, `${museum.short} · ${floor.name} · ${seen ? "vue" : "pas vue"}`),
         h("h3", null, room.title),
-        h("div", { class: "status-btns" },
-          STATUS.map((x, i) => h("button", {
-            type: "button",
-            class: `status-btn st-${x.key}` + (i === st ? " current" : ""),
-            "aria-pressed": String(i === st),
-            onclick: () => commit(i),
-          }, i === 2 ? "✓ Vu" : i === 1 ? "½ En partie" : "Pas vu")),
-        ),
-        h("label", { class: "field" }, h("span", null, "Date de visite"), date),
+        seen ? h("label", { class: "field" }, h("span", null, "Date de visite"), date) : null,
         h("label", { class: "field" }, h("span", null, "Note"), note),
         h("div", { class: "sheet-actions" },
           room.custom ? h("button", { type: "button", class: "btn ghost danger", onclick: async () => {
@@ -549,14 +552,10 @@
   }
 
   // ---------------------------------------------------------------------
-  // Réglages : mode rapide, sauvegarde, import, remise à zéro
+  // Réglages : sauvegarde, import, remise à zéro
   // ---------------------------------------------------------------------
   function openSettings() {
     const dlg = document.getElementById("sheet");
-    const quick = h("input", { type: "checkbox", id: "quick" });
-    quick.checked = !!state.prefs.quick;
-    quick.addEventListener("change", () => { state.prefs.quick = quick.checked; save(); rerender(); });
-
     const file = h("input", { type: "file", accept: "application/json,.json", hidden: true });
     file.addEventListener("change", async () => {
       const f = file.files[0];
@@ -578,7 +577,6 @@
       h("div", { class: "sheet-body" },
         h("div", { class: "sheet-grip" }),
         h("h3", null, "Réglages"),
-        h("label", { class: "switch" }, quick, h("span", null, "Mode rapide : toucher une salle sur le plan la marque directement comme vue")),
         h("p", { class: "small" },
           "Votre progression est enregistrée sur cet appareil, dans ce navigateur. " +
           "Exportez-la de temps en temps pour ne rien perdre ou pour la transférer sur un autre appareil."),

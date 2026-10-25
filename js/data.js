@@ -66,6 +66,12 @@
     return [...top, ...right, ...bottom, ...left];
   }
 
+  // Range des salles dans une partie du musée (pour « tout marquer vu »).
+  function sec(name, rooms) {
+    rooms.forEach((r) => { r.section = name; });
+    return rooms;
+  }
+
   // Découpe un tableau en morceaux de tailles données.
   function split(arr, ...sizes) {
     const out = [];
@@ -85,8 +91,10 @@
     const left = series("hp-", 1, 18, "roman", (n, s) =>
       n <= 8 ? `Saal ${s} – Collection égyptienne et orientale`
              : `Saal ${s} – Collection d'antiquités (Grèce, Rome)`);
+    sec("Égypte et Proche-Orient", left.slice(0, 8));
+    sec("Antiquités grecques et romaines", left.slice(8));
     const [lt, lr, lb, ll] = split(left, 6, 3, 6, 3);
-    const kk = series("hp-", 20, 37, "roman", (n, s) => `Saal ${s} – Kunstkammer`);
+    const kk = sec("Kunstkammer", series("hp-", 20, 37, "roman", (n, s) => `Saal ${s} – Kunstkammer`));
     const [rt, rr, rb, rl] = split(kk, 6, 3, 6, 3);
     return {
       id: "hp", name: "Rez-de-chaussée surélevé (Hochparterre)", w: 140, h: 88,
@@ -99,9 +107,11 @@
       rooms: [
         ...ring({ top: lt, right: lr, bottom: lb, left: ll }, 4, 4, 58, 72, 14),
         ...ring({ top: rt, right: rr, bottom: rb, left: rl }, 78, 4, 58, 72, 14),
-        ...row([R("hp-centre", "Centre", "Salle sous la coupole")], 62, 4, 16, 22),
-        ...row([R("hp-treppe", "Escalier", "Escalier d'honneur (Theseus de Canova, peintures de Klimt)")], 62, 26, 16, 30),
-        ...row([R("hp-vestibuel", "Vestib.", "Vestibule / Entrée")], 62, 56, 16, 20),
+        ...sec("Espaces centraux", [
+          ...row([R("hp-centre", "Centre", "Salle sous la coupole")], 62, 4, 16, 22),
+          ...row([R("hp-treppe", "Escalier", "Escalier d'honneur (Theseus de Canova, peintures de Klimt)")], 62, 26, 16, 30),
+          ...row([R("hp-vestibuel", "Vestib.", "Vestibule / Entrée")], 62, 56, 16, 20),
+        ]),
       ],
     };
   }
@@ -113,6 +123,8 @@
     const saeleE = series("gg-s", 8, 15, "roman", (n, s) => eastTitle(s));
     const kabW = series("gg-k", 1, 13, "arabic", (n, s) => `Kabinett ${s} – Peinture italienne, espagnole, française`);
     const kabE = series("gg-k", 14, 24, "arabic", (n, s) => `Kabinett ${s} – Peinture flamande, hollandaise, allemande`);
+    sec("Italie, Espagne, France", [...kabW, ...saeleW]);
+    sec("Flandres, Pays-Bas, Allemagne", [...kabE, ...saeleE]);
     const [swT, swR, swB, swL] = split(saeleW, 2, 1, 2, 2);
     const [seT, seR, seB] = split(saeleE, 3, 2, 3);
     const [kwT, kwB, kwL] = split(kabW, 5, 5, 3);
@@ -129,8 +141,10 @@
         ...ring({ top: swT, right: swR, bottom: swB, left: swL }, 11, 11, 51, 58, 11),
         ...ring({ top: keT, right: keR, bottom: keB }, 78, 4, 58, 72, 7),
         ...ring({ top: seT, right: seR, bottom: seB }, 78, 11, 51, 58, 11),
-        ...row([R("og-kuppel", "Coupole", "Kuppelhalle (café sous la coupole)")], 62, 4, 16, 40),
-        ...row([R("og-treppe", "Escalier", "Galerie de l'escalier d'honneur (Klimt)")], 62, 44, 16, 32),
+        ...sec("Espaces centraux", [
+          ...row([R("og-kuppel", "Coupole", "Kuppelhalle (café sous la coupole)")], 62, 4, 16, 40),
+          ...row([R("og-treppe", "Escalier", "Galerie de l'escalier d'honneur (Klimt)")], 62, 44, 16, 32),
+        ]),
       ],
     };
   }
@@ -170,8 +184,16 @@
     return `Saal ${n} – Zoologie : mammifères`;
   }
 
+  function nhmSection(n) {
+    if (n <= 5) return "Minéraux et météorites";
+    if (n <= 10) return "Géologie et paléontologie";
+    if (n <= 15) return "Préhistoire et anthropologie";
+    if (n <= 27) return "Invertébrés";
+    return "Vertébrés";
+  }
   const nhmHp = series("s", 1, 15, "arabic", (n) => nhmTitle(n));
   const nhmOg = series("s", 21, 39, "arabic", (n) => nhmTitle(n));
+  [...nhmHp, ...nhmOg].forEach((r) => { r.section = nhmSection(Number(r.label)); });
   const [nhL_t, nhL_r, nhL_b, nhL_l] = split(nhmHp.slice(0, 8), 3, 1, 3, 1);
   const [nhR_t, nhR_r, nhR_b] = split(nhmHp.slice(8), 3, 1, 3);
   const [noL_t, noL_r, noL_b, noL_l] = split(nhmOg.slice(0, 10), 4, 1, 4, 1);
@@ -226,6 +248,10 @@
       : `Saal ${n} – Trésor de Bourgogne / Toison d'or`);
   const geistlich = series("g", 1, 5, "roman", (n, s) => `Saal ${s} – Trésor ecclésiastique`);
   geistlich.forEach((r) => { r.label = "G " + r.label; });
+  sec("Trésor profane", weltlich.slice(0, 8));
+  sec("Saint-Empire romain germanique", weltlich.slice(8, 12));
+  sec("Trésor de Bourgogne", weltlich.slice(12));
+  sec("Trésor ecclésiastique", geistlich);
   const [wt, wr, wb] = split(weltlich, 6, 4, 6);
 
   const schatzkammer = {
