@@ -63,8 +63,10 @@
       },
       rooms: {
         "hp-1": {
-          text: "Décor égyptisant d'origine ; les murs portent des reproductions de peintures d'une tombe de Beni Hassan, réalisées par Ernst Weidenbach lors de l'expédition prussienne de Richard Lepsius.",
-          src: ["https://www.khm.at/ausstellungen/aegyptisch-orientalische-sammlung"],
+          text: "Décor égyptisant d'origine ; les murs portent des reproductions de peintures d'une tombe de Beni Hassan, réalisées par Ernst Weidenbach lors de l'expédition prussienne de Richard Lepsius. " +
+            "On y voit notamment un sarcophage momiforme provenant de Gamhud (IIe–Ier siècle av. J.-C.).",
+          see: ["Sarcophage momiforme de Gamhud"],
+          src: ["https://www.khm.at/ausstellungen/aegyptisch-orientalische-sammlung", "https://www.khm.at/kunstwerke/mumienfoermiger-sarg-mit-resten-einer-mumie-316926"],
         },
         "hp-2": {
           text: "Chapelle funéraire du fonctionnaire Ka-ni-nisut (Gizeh, début de la Ve dynastie, vers 2500 av. J.-C.), découverte en 1913 par une équipe autrichienne. " +
@@ -74,13 +76,39 @@
           src: ["https://www.khm.at/en/artworks/chapel-of-ka-ni-nisut-317061", "https://khm.at/objektdb/detail/317061"],
         },
         "hp-5": {
-          text: "Reproductions de peintures de la tombe de Beni Hassan, en place depuis l'ouverture du musée en 1891.",
-          src: ["https://www.khm.at/ausstellungen/aegyptisch-orientalische-sammlung"],
+          text: "Reproductions de peintures de la tombe de Beni Hassan, en place depuis l'ouverture du musée en 1891. " +
+            "On y voit l'hippopotame en faïence (vers 2000 av. J.-C.) : au Moyen Empire, ces figurines accompagnaient les défunts, l'hippopotame symbolisant la régénération dans l'au-delà.",
+          see: ["Hippopotame en faïence"],
+          src: ["https://www.khm.at/ausstellungen/aegyptisch-orientalische-sammlung", "https://www.khm.at/kunstwerke/nilpferd-323860"],
+        },
+        "hp-10": {
+          text: "Un fragment de la frise du Parthénon et le couvercle d'un sarcophage anthropoïde phénicien.",
+          see: ["Fragment de la frise du Parthénon"],
+          src: ["https://www.khm.at/kunstwerke/deckel-eines-anthropoiden-sarkophages-50183"],
+        },
+        "hp-11": {
+          text: "La plus grande salle de la collection. La mosaïque de Thésée, trouvée en 1815 à Loig près de Salzbourg, est intégrée à son sol de marbre. " +
+            "On y voit aussi le sarcophage des Amazones, en marbre pentélique, venu de Soloi à Chypre (seconde moitié du IVe siècle av. J.-C.).",
+          see: ["Mosaïque de Thésée", "Sarcophage des Amazones"],
+          src: ["https://www.khm.at/en/artworks/theseusmosaik-52079", "https://www.khm.at/en/artworks/amazonensarkophag-50832-1"],
+        },
+        "hp-14": {
+          text: "Vases et pierres gravées sur le thème de Thésée.",
+          src: ["https://www.khm.at/en/artworks/theseusmosaik-52079"],
         },
         "hp-16": {
           text: "Gemma Augustea : camée en onyx à deux couches (9–12 apr. J.-C.), 19 × 23 cm, célébrant Auguste et son successeur Tibère.",
           see: ["Gemma Augustea"],
           src: ["https://www.khm.at/kunstwerke/gemma-augustea-59171"],
+        },
+        "hp-22": {
+          text: "Œuvres de lapidaires : un bassin et une aiguière de Dionysio Miseroni (1652), et une double coupe avec Pomone.",
+          see: ["Bassin de Dionysio Miseroni (1652)"],
+          src: ["https://www.khm.at/kunstwerke/doppelpokal-mit-pomona-87974"],
+        },
+        "hp-23": {
+          text: "Une Immaculée Conception de Gérard van Opstal (XVIIe siècle) et une horloge de table de Nikolaus Planckh (avant 1631).",
+          src: ["https://www.khm.at/kunstwerke/maria-immaculata-mit-jesus-und-johannesknaben-93209", "https://www.khm.at/kunstwerke/tischuhr-92887"],
         },
         "hp-27": {
           text: "Horloges et automates, dont la nef automate de Hans Schlottheim (1585) qui avance sur la table pendant que l'équipage bouge en musique.",
@@ -95,6 +123,20 @@
         "hp-32": {
           text: "On y voit un automate, la « Cisterspielerin ».",
           src: ["https://www.khm.at/forschung/sammlungen/kunstkammer-wien"],
+        },
+        "hp-33": {
+          text: "Bustes d'empereurs romains, dont Jules César et Galba.",
+          see: ["Jules César", "Galba"],
+          src: ["https://www.khm.at/kunstwerke/julius-caesar-93677", "https://www.khm.at/kunstwerke/kaiser-galba-93645"],
+        },
+        "hp-34": {
+          text: "Vierge à l'Enfant avec deux anges musiciens de Donatello (vers 1460).",
+          see: ["Donatello – Madone aux anges musiciens"],
+          src: ["https://www.khm.at/kunstwerke/madonna-mit-kind-und-zwei-musizierenden-engeln-95118"],
+        },
+        "hp-35": {
+          text: "Un calice et une Vierge en majesté entourée d'anges et de saints.",
+          src: ["https://www.khm.at/kunstwerke/kelch-94809", "https://www.khm.at/kunstwerke/thronende-madonna-mit-heiligen-93726"],
         },
         "hp-36": {
           text: "Madone de Krumau (vers 1390/1400), associée à l'art de cour de Prague.",
@@ -120,14 +162,24 @@
           src: ["https://www.khm.at/kunstwerke/madonna-im-gruenen-1502"],
         },
         "gg-s2": {
-          text: "Titien, portrait d'Isabelle d'Este.",
-          see: ["Titien – Isabelle d'Este"],
-          src: ["https://www.khm.at/kunstwerke/judith-mit-dem-haupt-des-holofernes-1108"],
+          text: "Salle de Titien : Nymphe et berger (vers 1570/75, sujet toujours pas élucidé), Mars, Vénus et Amour, Lucrèce et son époux, et le portrait d'Isabelle d'Este.",
+          see: ["Titien – Nymphe et berger", "Titien – Mars, Vénus et Amour", "Titien – Isabelle d'Este"],
+          src: ["https://www.khm.at/kunstwerke/nymphe-und-schaefer-1950", "https://www.khm.at/kunstwerke/judith-mit-dem-haupt-des-holofernes-1108"],
         },
         "gg-s5": {
-          text: "Caravage, La Madone du Rosaire (vers 1601 selon la page allemande, vers 1603 selon la page anglaise).",
-          see: ["Caravage – Rosenkranzmadonna"],
-          src: ["https://www.khm.at/kunstwerke/rosenkranzmadonna-425"],
+          text: "Salle du Caravage : La Madone du Rosaire (vers 1601 selon la page allemande, vers 1603 selon la page anglaise) et David avec la tête de Goliath (vers 1600/01).",
+          see: ["Caravage – Rosenkranzmadonna", "Caravage – David et Goliath"],
+          src: ["https://www.khm.at/kunstwerke/rosenkranzmadonna-425", "https://www.khm.at/kunstwerke/david-mit-dem-haupt-des-goliath-426"],
+        },
+        "gg-k3": {
+          text: "Parmesan, Autoportrait au miroir convexe (vers 1523/24), jeu entre miroir et tableau sur la peinture comme illusion ; et Corrège, Jupiter et Io (vers 1530).",
+          see: ["Parmesan – Autoportrait au miroir convexe", "Corrège – Jupiter et Io"],
+          src: ["https://www.khm.at/kunstwerke/selbstbildnis-im-konvexspiegel-1407", "https://www.khm.at/kunstwerke/jupiter-und-io-40"],
+        },
+        "gg-k8": {
+          text: "Les têtes composées d'Arcimboldo : L'Été et L'Hiver (1563). L'Été provient de la Kunstkammer de Rodolphe II.",
+          see: ["Arcimboldo – L'Été", "Arcimboldo – L'Hiver"],
+          src: ["https://www.khm.at/kunstwerke/sommer-71", "https://www.khm.at/en/artworks/water-74"],
         },
         "gg-k10": {
           text: "Les portraits des infantes de Velázquez, dont l'infante Marguerite en robe bleue.",
@@ -143,9 +195,19 @@
           ],
         },
         "gg-s11": {
-          text: "Albrecht Dürer, le Retable de tous les saints (« Landauer Altar », 1511), avec une copie de 1654.",
-          see: ["Dürer – Allerheiligenbild"],
-          src: ["https://khm.at/de/objektdb/detail/615"],
+          text: "Peinture allemande de la Renaissance : le Retable de tous les saints de Dürer (« Landauer Altar », 1511) et son portrait de l'empereur Maximilien Ier (1519), Jane Seymour de Holbein (vers 1536/37) et Judith de Cranach (vers 1530).",
+          see: ["Dürer – Allerheiligenbild", "Dürer – Maximilien Ier", "Holbein – Jane Seymour", "Cranach – Judith"],
+          src: ["https://khm.at/de/objektdb/detail/615", "https://www.khm.at/en/exhibitions/picture-gallery"],
+        },
+        "gg-s12": {
+          text: "Rembrandt, Grand autoportrait (1652). Selon sa fiche, L'Art de la peinture de Vermeer (vers 1666/68), allégorie de la peinture dont le modèle pose en Clio, est aussi exposée ici ; une autre page du musée indique le Kabinett 16.",
+          see: ["Rembrandt – Grand autoportrait", "Vermeer – L'Art de la peinture"],
+          src: ["https://www.khm.at/kunstwerke/grosses-selbstbildnis-1516", "https://www.khm.at/kunstwerke/die-malkunst-2574"],
+        },
+        "gg-k20": {
+          text: "Rubens, Hélène Fourment dite « La Petite Pelisse » (vers 1636/38).",
+          see: ["Rubens – Das Pelzchen"],
+          src: ["https://www.khm.at/kunstwerke/helena-fourment-das-pelzchen-1637"],
         },
         "mk-1": {
           text: "Histoire de la médaille, de l'Italie vers 1400 au XXe siècle, et décorations autrichiennes et européennes.",
@@ -176,8 +238,14 @@
       },
       rooms: {
         "w-reich": {
-          text: "Les insignes du Saint-Empire romain germanique, avec en pièce centrale la couronne impériale, vieille de plus de 1 000 ans.",
-          src: ["https://www.kaiserliche-schatzkammer.at/en/visit/collections/secular-treasury/"],
+          text: "Les insignes et reliques du Saint-Empire romain germanique, le plus important trésor de sacre du Moyen Âge : la couronne impériale, vieille de plus de 1 000 ans, et la Sainte Lance. " +
+            "On y voit aussi le globe impérial (vers 1200, 522 g) et le manteau du sacre (1133/34, ateliers royaux de Palerme), en soie rouge brodée d'or et de milliers de perles.",
+          see: ["Couronne impériale", "Sainte Lance", "Globe impérial", "Manteau du sacre"],
+          src: [
+            "https://www.kaiserliche-schatzkammer.at/besuchen/sammlungen/weltliche-schatzkammer/",
+            "https://www.khm.at/kunstwerke/der-reichsapfel-100444",
+            "https://www.khm.at/objektdb/detail/100435/",
+          ],
         },
         "w-rudolf": {
           text: "Couronne privée réalisée en 1602 à Prague pour Rodolphe II par l'orfèvre Jan Vermeyer. Contrairement à la plupart des couronnes privées, elle n'a pas été démontée à la mort de l'empereur ; elle est devenue la couronne de l'empire d'Autriche.",
@@ -309,10 +377,22 @@
           text: "Salles 1 à 4 : minéraux classés de façon systématique (classification de Strunz), pierres précieuses et roches ; les pièces les plus précieuses sont dans des vitrines-coffres.",
           src: ["https://www.nhm.at/ausstellung/dauerausstellung__schausammlung/hochparterre/mineralien_gesteine_saal_1-4"],
         },
+        "Histoire de la Terre et dinosaures": {
+          text: "Salles 6 à 9 : les étapes de l'évolution, des unicellulaires aux mammifères et à l'homme moderne.",
+          src: ["https://www.nhm.at/ausstellung/dauerausstellung__schausammlung/hochparterre/erdgeschichte_fossilienbrsaal_6-9"],
+        },
         "Préhistoire et anthropologie": {
-          text: "Salles 11 à 13 : préhistoire. Un « Venuskabinett » présente la Vénus de Willendorf ; les deux figures de Vénus sont les seuls objets de cette pièce. Salles 14–15 : anthropologie ; salle 16 : enfants de l'ère glaciaire.",
+          text: "Salles 11 et 13 : préhistoire, présentée chronologiquement. Un « Venuskabinett » présente la Vénus de Willendorf ; les deux figures de Vénus sont les seuls objets de cette pièce. Salles 14–15 : anthropologie ; salle 16 : enfants de l'ère glaciaire.",
           see: ["Vénus de Willendorf"],
           src: ["https://www.nhm.at/ausstellung/dauerausstellung__schausammlung/hochparterre/urgeschichtebrsaal_11-13"],
+        },
+        "Poissons, amphibiens, reptiles": {
+          text: "La collection de poissons compte environ un million de spécimens, dont seulement un pour mille est exposé. " +
+            "Salles 27–28 : environ 1 000 espèces d'amphibiens et de reptiles, dont toutes les espèces d'Autriche (21 amphibiens et 15 reptiles).",
+          src: [
+            "https://www.nhm.at/ausstellung/dauerausstellung__schausammlung/erster_stock/fische_saal_25-26",
+            "https://www.nhm.at/ausstellung/dauerausstellung_schausammlung/amphibien_reptilien",
+          ],
         },
         "Oiseaux": {
           text: "Les salles 29 à 32 étaient fermées pour travaux ; le musée annonçait une nouvelle présentation des salles 29 et 30 pour le 29 septembre 2026. Environ 2 500 objets, près d'un quart des espèces d'oiseaux connues.",
@@ -350,6 +430,24 @@
           see: ["Diplodocus", "Allosaurus", "Iguanodon", "Pteranodon"],
           src: ["https://www.nhm.at/alte_meister_-_dinosaurier_und_meteorite"],
         },
+        s12: {
+          text: "Salle thématique entièrement consacrée au site de Hallstatt : la vallée du sel et la mine préhistorique. L'âge du fer ancien porte le nom des découvertes de la nécropole de Hallstatt.",
+          src: ["https://www.nhm.at/ausstellung/dauerausstellung__schausammlung/hochparterre/urgeschichtebrsaal_11-13"],
+        },
+        s14: {
+          text: "L'évolution des hominidés jusqu'au néolithique, avec un accent sur la bipédie et l'évolution du cerveau. Six stations à toucher, dont un modèle tactile des jumeaux du Wachtberg ; découvertes récentes comme les Dénisoviens et Homo floresiensis.",
+          src: ["https://www.nhm.at/ausstellung/dauerausstellung__schausammlung/hochparterre/anthropologie_brsaal_14-15"],
+        },
+        s16: {
+          text: "Salle pour enfants réaménagée en 2025 : l'ère glaciaire vue par les enfants, avec squelettes d'animaux, stations sur l'habitat, la chasse et l'alimentation, et une grotte. " +
+            "À voir : le rhinocéros de Hundsheim et un mammouth en argile de Pavlov, parmi les plus anciens objets en céramique.",
+          see: ["Rhinocéros de Hundsheim", "Mammouth en argile de Pavlov"],
+          src: ["https://www.nhm.at/presse/ausstellungen_2025/kindereiszeitsaal"],
+        },
+        s21: {
+          text: "Salle d'expositions temporaires.",
+          src: ["https://www.nhm.at/ausstellung/dauerausstellung__schausammlung/erster_stock/neue_perspektiven_21"],
+        },
         s22: {
           text: "Unicellulaires, éponges, cnidaires, « vers », escargots, moules, céphalopodes, échinodermes.",
           src: ["https://www.nhm.at/ausstellung/dauerausstellung__schausammlung/erster_stock/einzeller_korallen_weichtierebrsaal_22-23"],
@@ -357,6 +455,19 @@
         s24: {
           text: "La diversité des insectes, avec crustacés, arachnides et mille-pattes dans les vitrines murales.",
           src: ["https://www.nhm.at/ausstellung/dauerausstellung_schausammlung/erster_stock/krebse_spinnentiere_insekten"],
+        },
+        s25: {
+          text: "Une grande vitrine de requins, raies et chimères.",
+          src: ["https://www.nhm.at/ausstellung/dauerausstellung__schausammlung/erster_stock/fische_saal_25-26"],
+        },
+        s26: {
+          text: "Le poisson-lune et le cœlacanthe.",
+          see: ["Poisson-lune", "Cœlacanthe"],
+          src: ["https://www.nhm.at/ausstellung/dauerausstellung__schausammlung/erster_stock/fische_saal_25-26"],
+        },
+        s27: {
+          text: "Parmi les espèces exposées, l'historique caméléon joyau.",
+          src: ["https://www.nhm.at/ausstellung/dauerausstellung_schausammlung/amphibien_reptilien"],
         },
         s33: {
           text: "Le loup de Tasmanie (thylacine).",
@@ -432,9 +543,10 @@
     // -------------------------------------------------------------------
     "oberes-belvedere": {
       intro: {
-        text: "Chefs-d'œuvre du Moyen Âge à nos jours, dont Le Baiser de Klimt (vers 1907–1909, 180 × 180 cm). Le musée possède aussi 16 « têtes de caractère » originales de Franz Xaver Messerschmidt, la plus grande collection au monde.",
+        text: "Chefs-d'œuvre du Moyen Âge à nos jours, dont Le Baiser de Klimt (vers 1907–1909, 180 × 180 cm). Le musée possède aussi 16 « têtes de caractère » originales de Franz Xaver Messerschmidt, la plus grande collection au monde. " +
+          "Le plan du musée répartit la collection en baroque, classicisme, romantisme et Biedermeier, réalisme et impressionnisme, et Vienne vers 1900.",
         see: ["Klimt – Le Baiser", "Messerschmidt – Charakterköpfe"],
-        src: ["https://www.belvedere.at/en/permanent-collection", "https://sammlung.belvedere.at/objects/6678", "https://www.belvedere.at/en/messerschmidt"],
+        src: ["https://www.belvedere.at/en/permanent-collection", "https://sammlung.belvedere.at/objects/6678", "https://www.belvedere.at/en/messerschmidt", "https://www.belvedere.at/sites/default/files/media-directories/OB_Location_Map.pdf"],
       },
       rooms: {
         "1-marmor": {
@@ -590,8 +702,10 @@
           src: ["https://www.technischesmuseum.at/ausstellung/alltag"],
         },
         mobil: {
-          text: "Environ 3 000 m² et quelque 800 objets : transports sur terre, sur l'eau et dans les airs.",
-          src: ["https://www.technischesmuseum.at/museum/ausstellungen"],
+          text: "Environ 3 000 m² et quelque 800 objets : transports sur terre, sur l'eau et dans les airs. " +
+            "À voir : la voiture électrique Lohner-Porsche (médaille d'or à Paris en 1900), la voiture de Siegfried Marcus, longtemps considérée comme la première automobile, la Mercedes W196 « Flèche d'argent » et un planeur de Lilienthal, dont il ne reste que cinq exemplaires au monde.",
+          see: ["Lohner-Porsche", "Voiture de Siegfried Marcus", "Mercedes W196", "Planeur de Lilienthal"],
+          src: ["https://www.technischesmuseum.at/ausstellung/mobilitaet"],
         },
         arbeit: {
           text: "Le monde du travail depuis l'industrialisation.",
@@ -606,8 +720,9 @@
           src: ["https://www.technischesmuseum.at/museum/ausstellungen"],
         },
         lok: {
-          text: "Collection ferroviaire de plus de 60 grands objets, dont le wagon-salon de l'impératrice Élisabeth.",
-          src: ["https://www.technischesmuseum.at/museum/ausstellungen"],
+          text: "Collection ferroviaire de plus de 60 grands objets ; les originaux les plus précieux, dont le wagon-salon de l'impératrice Élisabeth, sont dans l'espace découverte. Quatre véhicules sont au niveau 2, et la locomotive à vapeur 12.10 est intégrée à « Materialwelten ».",
+          see: ["Wagon-salon de l'impératrice Élisabeth", "Locomotive 12.10"],
+          src: ["https://www.technischesmuseum.at/ausstellung/lokerlebnis"],
         },
         minix: {
           text: "Exposition à manipuler pour les enfants de 3 à 8 ans.",
