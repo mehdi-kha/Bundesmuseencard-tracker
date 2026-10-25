@@ -43,13 +43,16 @@ salles directement dans l'appli.
 
 ### Sur le téléphone (recommandé)
 
-1. Sur GitHub : **Settings → Pages → Build and deployment → Source :
-   GitHub Actions**.
-2. Fusionnez cette branche dans `main` : le workflow
-   `.github/workflows/pages.yml` publie le site sur
-   `https://<utilisateur>.github.io/<dépôt>/`.
-3. Ouvrez l'adresse sur le téléphone, puis « Ajouter à l'écran d'accueil »
+1. Le dépôt doit être **public** (GitHub Pages gratuit).
+2. Sur GitHub : **Settings → Pages → Build and deployment**
+   - Source : **Deploy from a branch**
+   - Branch : **main**, dossier **/ (root)** → **Save**
+3. Après une minute environ, l'appli est sur
+   https://mehdi-kha.github.io/Bundesmuseencard-tracker/
+4. Ouvrez l'adresse sur le téléphone, puis « Ajouter à l'écran d'accueil »
    (Safari : bouton Partager ; Chrome : menu ⋮).
+
+Chaque push sur `main` met le site à jour automatiquement.
 
 ### En local
 
