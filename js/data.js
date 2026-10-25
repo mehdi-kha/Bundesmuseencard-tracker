@@ -108,9 +108,7 @@
         ...ring({ top: lt, right: lr, bottom: lb, left: ll }, 4, 4, 58, 72, 14),
         ...ring({ top: rt, right: rr, bottom: rb, left: rl }, 78, 4, 58, 72, 14),
         ...sec("Espaces centraux", [
-          ...row([R("hp-centre", "Centre", "Salle sous la coupole")], 62, 4, 16, 22),
-          ...row([R("hp-treppe", "Escalier", "Escalier d'honneur (Theseus de Canova, peintures de Klimt)")], 62, 26, 16, 30),
-          ...row([R("hp-vestibuel", "Vestib.", "Vestibule / Entrée")], 62, 56, 16, 20),
+          ...row([R("hp-treppe", "Escalier", "Escalier d'honneur (Thésée de Canova, peintures de Klimt)")], 62, 4, 16, 72),
         ]),
       ],
     };
@@ -142,7 +140,7 @@
         ...ring({ top: keT, right: keR, bottom: keB }, 78, 4, 58, 72, 7),
         ...ring({ top: seT, right: seR, bottom: seB }, 78, 11, 51, 58, 11),
         ...sec("Espaces centraux", [
-          ...row([R("og-kuppel", "Coupole", "Kuppelhalle (café sous la coupole)")], 62, 4, 16, 40),
+          ...row([R("og-kuppel", "Coupole", "Kuppelhalle (salle de la coupole)")], 62, 4, 16, 40),
           ...row([R("og-treppe", "Escalier", "Galerie de l'escalier d'honneur (Klimt)")], 62, 44, 16, 32),
         ]),
       ],
@@ -160,7 +158,11 @@
         id: "2og", name: "2e étage – Münzkabinett", w: 140, h: 40,
         decor: [outline(4, 4, 132, 32), label(100, 22, "Cabinet des médailles")],
         rooms: [
-          ...row(series("mk-", 1, 3, "roman", (n, s) => `Saal ${s} – Münzkabinett (monnaies & médailles)`), 4, 4, 60, 32),
+          ...row(series("mk-", 1, 3, "roman", (n, s) => [
+            "Saal I – Médailles et décorations",
+            "Saal II – Monnaies et papier-monnaie",
+            "Saal III – Expositions temporaires",
+          ][n - 1]), 4, 4, 60, 32),
         ],
       },
     ],
@@ -168,34 +170,38 @@
 
   // ---------------------------------------------------------------------
   // Naturhistorisches Museum (bâtiment jumeau du KHM)
+  // Numérotation et thèmes des salles : nhm.at (Dauerausstellung).
   // ---------------------------------------------------------------------
   function nhmTitle(n) {
-    if (n <= 4) return `Saal ${n} – Minéraux et pierres précieuses`;
+    if (n <= 4) return `Saal ${n} – Minéraux, pierres précieuses, roches`;
     if (n === 5) return "Saal 5 – Météorites";
-    if (n === 6) return "Saal 6 – Géologie, la Terre";
-    if (n <= 9) return `Saal ${n} – Paléontologie`;
+    if (n <= 9) return `Saal ${n} – Histoire de la Terre, fossiles`;
     if (n === 10) return "Saal 10 – Dinosaures";
-    if (n === 11) return "Saal 11 – Préhistoire (Vénus de Willendorf)";
     if (n <= 13) return `Saal ${n} – Préhistoire`;
-    if (n <= 15) return `Saal ${n} – Anthropologie, évolution humaine`;
-    if (n <= 27) return `Saal ${n} – Zoologie : invertébrés`;
-    if (n <= 29) return `Saal ${n} – Zoologie : poissons, amphibiens, reptiles`;
-    if (n <= 32) return `Saal ${n} – Zoologie : oiseaux`;
-    return `Saal ${n} – Zoologie : mammifères`;
+    if (n <= 15) return `Saal ${n} – Anthropologie`;
+    if (n === 16) return "Saal 16 – Enfants de l'ère glaciaire";
+    if (n === 21) return "Saal 21 – Nouvelles perspectives";
+    if (n <= 23) return `Saal ${n} – Unicellulaires, coraux, mollusques`;
+    if (n === 24) return "Saal 24 – Crustacés, arachnides, insectes";
+    if (n <= 26) return `Saal ${n} – Poissons`;
+    if (n <= 28) return `Saal ${n} – Amphibiens et reptiles`;
+    if (n <= 32) return `Saal ${n} – Oiseaux`;
+    return `Saal ${n} – Mammifères`;
   }
-
   function nhmSection(n) {
     if (n <= 5) return "Minéraux et météorites";
-    if (n <= 10) return "Géologie et paléontologie";
-    if (n <= 15) return "Préhistoire et anthropologie";
-    if (n <= 27) return "Invertébrés";
-    return "Vertébrés";
+    if (n <= 10) return "Histoire de la Terre et dinosaures";
+    if (n <= 16) return "Préhistoire et anthropologie";
+    if (n <= 24) return "Invertébrés";
+    if (n <= 28) return "Poissons, amphibiens, reptiles";
+    if (n <= 32) return "Oiseaux";
+    return "Mammifères";
   }
-  const nhmHp = series("s", 1, 15, "arabic", (n) => nhmTitle(n));
+  const nhmHp = series("s", 1, 16, "arabic", (n) => nhmTitle(n));
   const nhmOg = series("s", 21, 39, "arabic", (n) => nhmTitle(n));
   [...nhmHp, ...nhmOg].forEach((r) => { r.section = nhmSection(Number(r.label)); });
   const [nhL_t, nhL_r, nhL_b, nhL_l] = split(nhmHp.slice(0, 8), 3, 1, 3, 1);
-  const [nhR_t, nhR_r, nhR_b] = split(nhmHp.slice(8), 3, 1, 3);
+  const [nhR_t, nhR_r, nhR_b] = split(nhmHp.slice(8), 3, 2, 3);
   const [noL_t, noL_r, noL_b, noL_l] = split(nhmOg.slice(0, 10), 4, 1, 4, 1);
   const [noR_t, noR_r, noR_b] = split(nhmOg.slice(10), 4, 1, 4);
 
@@ -205,13 +211,11 @@
     address: "Maria-Theresien-Platz, 1010 Wien", color: "#4e7a3a",
     floors: [
       {
-        id: "hp", name: "Rez-de-chaussée surélevé – Minéraux, fossiles, préhistoire", w: 140, h: 88,
+        id: "hp", name: "Hochparterre – Minéraux, fossiles, préhistoire", w: 140, h: 88,
         decor: [outline(4, 4, 132, 72), court(18, 18, 30, 44), court(92, 18, 30, 44), label(70, 84, "▲ Entrée")],
         rooms: [
           ...ring({ top: nhL_t, right: nhL_r, bottom: nhL_b, left: nhL_l }, 4, 4, 58, 72, 14),
           ...ring({ top: nhR_t, right: nhR_r, bottom: nhR_b }, 78, 4, 58, 72, 14),
-          ...row([R("hp-kuppel", "Coupole", "Salle de la coupole"), R("hp-treppe", "Escalier", "Escalier d'honneur")], 62, 4, 16, 52, true),
-          ...row([R("hp-planetarium", "Planét.", "Planétarium numérique (séances)")], 62, 56, 16, 20),
         ],
       },
       {
@@ -220,7 +224,6 @@
         rooms: [
           ...ring({ top: noL_t, right: noL_r, bottom: noL_b, left: noL_l }, 4, 4, 58, 72, 14),
           ...ring({ top: noR_t, right: noR_r, bottom: noR_b }, 78, 4, 58, 72, 14),
-          ...row([R("og-kuppel", "Coupole", "Galerie de la coupole / café")], 62, 4, 16, 72),
         ],
       },
     ],
@@ -229,43 +232,32 @@
   const narrenturm = {
     id: "narrenturm", group: "Naturhistorisches Museum",
     name: "Narrenturm", short: "Narrenturm",
-    address: "Spitalgasse 2, 1090 Wien (campus de l'Altes AKH)", color: "#4e7a3a",
-    note: "Collection pathologique et anatomique du NHM, dans l'ancienne tour circulaire.",
+    address: "Campus de l'Altes AKH, 1090 Wien", color: "#4e7a3a",
+    note: "Collection pathologique et anatomique du NHM. Contient des préparations humaines.",
     floors: [
-      { id: "eg", name: "Rez-de-chaussée", rooms: [R("eg-a", "Exposition", "Exposition permanente (rez-de-chaussée)"), R("eg-b", "Histoire", "Histoire du Narrenturm")] },
-      { id: "1og", name: "1er étage", rooms: [R("1og-a", "Collection", "Collection pathologique – 1er étage")] },
-      { id: "2og", name: "2e étage", rooms: [R("2og-a", "Collection", "Collection pathologique – 2e étage")] },
+      { id: "eg", name: "Rez-de-chaussée", rooms: [R("eg-a", "Exposition", "Exposition permanente (19 salles)")] },
     ],
   };
 
   // ---------------------------------------------------------------------
   // Autres sites du KHM-Museumsverband
   // ---------------------------------------------------------------------
-  const weltlich = series("w", 1, 16, "arabic", (n) =>
-    n === 11 ? "Saal 11 – Couronne du Saint-Empire"
-      : n <= 8 ? `Saal ${n} – Trésor profane (Habsbourg)`
-      : n <= 12 ? `Saal ${n} – Insignes du Saint-Empire`
-      : `Saal ${n} – Trésor de Bourgogne / Toison d'or`);
-  const geistlich = series("g", 1, 5, "roman", (n, s) => `Saal ${s} – Trésor ecclésiastique`);
-  geistlich.forEach((r) => { r.label = "G " + r.label; });
-  sec("Trésor profane", weltlich.slice(0, 8));
-  sec("Saint-Empire romain germanique", weltlich.slice(8, 12));
-  sec("Trésor de Bourgogne", weltlich.slice(12));
-  sec("Trésor ecclésiastique", geistlich);
-  const [wt, wr, wb] = split(weltlich, 6, 4, 6);
-
   const schatzkammer = {
     id: "schatzkammer", group: "KHM-Museumsverband",
     name: "Kaiserliche Schatzkammer", short: "Schatzkammer",
     address: "Hofburg, Schweizerhof, 1010 Wien", color: "#9b5d2e",
     floors: [
       {
-        id: "eg", name: "Trésor impérial", w: 120, h: 80,
-        decor: [label(54, 44, "Schweizerhof")],
-        rooms: [
-          ...ring({ top: wt, right: wr, bottom: wb }, 4, 4, 112, 56, 12),
-          ...row(geistlich, 4, 64, 112, 12),
-        ],
+        id: "weltlich", name: "Trésor profane (Weltliche Schatzkammer)", rooms: sec("Trésor profane", [
+          R("w-reich", "Saint-Empire", "Insignes du Saint-Empire (couronne impériale)"),
+          R("w-rudolf", "Couronne Rodolphe II", "Couronne de Rodolphe II (couronne de l'empire d'Autriche)"),
+          R("w-erbstuecke", "Ainkhürn", "« Ainkhürn » et coupe en agate"),
+          R("w-burgund", "Bourgogne", "Trésor de Bourgogne et Toison d'or"),
+        ]),
+      },
+      {
+        id: "geistlich", name: "Trésor ecclésiastique (Geistliche Schatzkammer)",
+        rooms: sec("Trésor ecclésiastique", [R("g-1", "Trésor eccl.", "Trésor ecclésiastique")]),
       },
     ],
   };
@@ -274,22 +266,16 @@
     id: "weltmuseum", group: "KHM-Museumsverband",
     name: "Weltmuseum Wien", short: "Weltmuseum",
     address: "Neue Burg, Heldenplatz, 1010 Wien", color: "#2f6f8f",
-    note: "Exposition permanente en 14 salles (Hochparterre) — numérotation à vérifier sur place.",
+    note: "Certaines salles peuvent être fermées : voir le plan interactif du musée.",
     floors: [
       {
-        id: "eg", name: "Hall et rez-de-chaussée", rooms: [
-          R("saeulenhalle", "Säulenhalle", "Säulenhalle (hall à colonnes)"),
-          R("sonder", "Temporaire", "Expositions temporaires"),
-        ],
-      },
-      {
-        id: "hp", name: "Exposition permanente", w: 120, h: 50,
-        decor: [label(60, 26, "Corso / Halle")],
+        id: "hp", name: "Mezzanine – Collection permanente (13 salles)", w: 120, h: 50,
         rooms: [
-          ...row(series("s", 1, 7, "arabic", (n) => `Saal ${n} – Exposition permanente`), 4, 4, 112, 16),
-          ...row(series("s", 8, 14, "arabic", (n) => `Saal ${n} – Exposition permanente`), 4, 32, 112, 16),
+          ...row(series("s", 1, 7, "arabic", (n) => `Salle ${n} – Collection permanente`), 4, 4, 112, 18),
+          ...row(series("s", 8, 13, "arabic", (n) => `Salle ${n} – Collection permanente`), 4, 28, 96, 18),
         ],
       },
+      { id: "sonder", name: "Expositions temporaires", rooms: [R("sonder", "Temporaire", "Expositions temporaires")] },
     ],
   };
 
@@ -297,22 +283,13 @@
     id: "neueburg", group: "KHM-Museumsverband",
     name: "Neue Burg – collections du KHM", short: "Neue Burg",
     address: "Neue Burg, Heldenplatz, 1010 Wien", color: "#9b5d2e",
-    note: "Hofjagd- und Rüstkammer, Sammlung alter Musikinstrumente et Ephesos Museum.",
     floors: [
       {
-        id: "eph", name: "Ephesos Museum", rooms: [
-          R("eph-1", "Frise", "Frise des Parthes (autel d'Éphèse)"),
-          R("eph-2", "Éphèse", "Fouilles d'Éphèse"),
-          R("eph-3", "Samothrace", "Samothrace"),
+        id: "neueburg", name: "Collections de la Neue Burg", rooms: [
+          R("eph", "Ephesos", "Ephesos Museum"),
+          R("hjrk", "Armures", "Hofjagd- und Rüstkammer (armes et armures)"),
+          R("sam", "Instruments", "Sammlung alter Musikinstrumente (instruments anciens)"),
         ],
-      },
-      {
-        id: "hjrk", name: "Hofjagd- und Rüstkammer (armes & armures)", w: 120, h: 30,
-        rooms: row(series("hj", 1, 8, "roman", (n, s) => `Saal ${s} – Hofjagd- und Rüstkammer`), 4, 4, 112, 22),
-      },
-      {
-        id: "sam", name: "Sammlung alter Musikinstrumente", w: 120, h: 30,
-        rooms: row(series("mi", 1, 8, "roman", (n, s) => `Saal ${s} – Instruments de musique anciens`), 4, 4, 112, 22),
       },
     ],
   };
@@ -321,13 +298,12 @@
     id: "theatermuseum", group: "KHM-Museumsverband",
     name: "Theatermuseum", short: "Theatermuseum",
     address: "Palais Lobkowitz, Lobkowitzplatz 2, 1010 Wien", color: "#9b5d2e",
-    note: "Vérifiez l'ouverture avant d'y aller (rénovations).",
+    note: "Fermé pour travaux d'août 2025 à l'automne 2026 : vérifiez la réouverture.",
     floors: [
       {
-        id: "1og", name: "Palais Lobkowitz", rooms: [
+        id: "palais", name: "Palais Lobkowitz", rooms: [
           R("eroica", "Eroica-Saal", "Eroica-Saal"),
-          R("sonder", "Exposition", "Exposition temporaire"),
-          R("puppen", "Marionnettes", "Marionnettes et théâtre de figures"),
+          R("sonder", "Exposition", "Expositions"),
         ],
       },
     ],
@@ -339,13 +315,11 @@
     address: "Schloss Schönbrunn, 1130 Wien", color: "#9b5d2e",
     floors: [
       {
-        id: "eg", name: "Hall des carrosses", rooms: [
-          R("halle", "Grand hall", "Grand hall – carrosses impériaux"),
-          R("kroenung", "Couronne.", "Carrosse du couronnement"),
-          R("sisi", "Sisi", "Parcours Sisi"),
-          R("trauer", "Deuil", "Corbillard impérial"),
-          R("kinder", "Enfants", "Voitures d'enfants"),
-          R("galerie", "Galerie", "Galerie (selleries, livrées)"),
+        id: "eg", name: "Collection de carrosses", rooms: [
+          R("halle", "Carrosses", "Carrosses de la cour impériale"),
+          R("kroenung", "Imperialwagen", "Grand carrosse du couronnement (« Imperialwagen »)"),
+          R("sisi", "Sisi", "Parcours Sisi (Sisi-Pfad)"),
+          R("trauer", "Corbillard", "Corbillard noir"),
         ],
       },
     ],
@@ -355,22 +329,25 @@
     id: "ambras", group: "KHM-Museumsverband",
     name: "Schloss Ambras Innsbruck", short: "Ambras",
     address: "Schlossstraße 20, 6020 Innsbruck", color: "#9b5d2e",
+    note: "Fermé en novembre. Galerie de portraits ouverte d'avril à octobre.",
     floors: [
       {
         id: "unter", name: "Château bas (Unterschloss)", rooms: [
-          R("ruest", "Armures", "Chambres d'armures"),
-          R("kunst", "Wunderkammer", "Chambre d'art et de merveilles"),
-          R("spanisch", "Saal Esp.", "Salle espagnole (Spanischer Saal)"),
+          R("ruest", "Armures", "Chambres d'armures (Rüstkammern)"),
+          R("kunst", "Wunderkammer", "Chambre d'art et de merveilles (Kunst- und Wunderkammer)"),
         ],
       },
       {
         id: "hoch", name: "Château haut (Hochschloss)", rooms: [
           R("portrait", "Portraits", "Galerie de portraits des Habsbourg"),
-          R("bad", "Bain", "Bain de Philippine Welser"),
-          R("wohn", "Appart.", "Appartements Renaissance"),
         ],
       },
-      { id: "park", name: "Extérieur", rooms: [R("park", "Parc", "Parc du château")] },
+      {
+        id: "autres", name: "Autres lieux du château", rooms: [
+          R("spanisch", "Saal Esp.", "Salle espagnole (Spanischer Saal)"),
+          R("bad", "Bain", "Bain de Philippine Welser"),
+        ],
+      },
     ],
   };
 
@@ -383,32 +360,17 @@
     address: "Albertinaplatz 1, 1010 Wien", color: "#7a3b6e",
     floors: [
       {
-        id: "prunk", name: "Salles d'apparat des Habsbourg (Prunkräume)", w: 120, h: 50,
-        rooms: [
-          ...row([
-            R("p-stiege", "Escalier", "Escalier d'honneur"),
-            R("p-vor", "Antich.", "Antichambre"),
-            R("p-audienz", "Audience", "Salle d'audience"),
-            R("p-musen", "Muses", "Salle des Muses (Musensaal)"),
-            R("p-spiegel", "Miroirs", "Salle des miroirs (Spiegelsaal)"),
-          ], 4, 4, 112, 20),
-          ...row([
-            R("p-wedgwood", "Wedgwood", "Cabinet Wedgwood"),
-            R("p-gold", "Or", "Cabinet doré (Goldkabinett)"),
-            R("p-mc", "M.-Christine", "Appartements de Marie-Christine"),
-            R("p-albert", "Albert", "Cabinet de travail du duc Albert"),
-            R("p-salon", "Salons", "Salons de l'appartement espagnol"),
-          ], 4, 26, 112, 20),
+        id: "prunk", name: "Salles d'apparat des Habsbourg (Prunkräume)", rooms: [
+          R("p-musen", "Muses", "Salle des Muses (Musensaal)"),
+          R("p-gold", "Cab. doré", "Cabinet doré (Goldkabinett)"),
+          R("p-wedgwood", "Wedgwood", "Cabinet Wedgwood"),
+          R("p-autres", "Autres salles", "Autres salles d'apparat"),
         ],
       },
       {
         id: "samm", name: "Collection permanente & expositions", rooms: [
-          R("batliner", "Monet→Picasso", "De Monet à Picasso (collection Batliner)"),
-          R("pfeiler", "Pfeilerhalle", "Pfeilerhalle"),
-          R("bastei", "Basteihalle", "Basteihalle"),
-          R("propter", "Propter Homines", "Propter Homines Halle"),
-          R("tietze", "Tietze", "Tietze Galleries"),
-          R("foto", "Photo", "Galerie photographique"),
+          R("batliner", "Collection Batliner", "Collection Batliner (« Monet bis Picasso » / « Monet to Chagall »)"),
+          R("sonder", "Temporaires", "Expositions temporaires"),
         ],
       },
     ],
@@ -419,8 +381,7 @@
     name: "Albertina Modern", short: "Albertina Modern",
     address: "Künstlerhaus, Karlsplatz 5, 1010 Wien", color: "#7a3b6e",
     floors: [
-      { id: "eg", name: "Rez-de-chaussée", rooms: [R("eg-1", "Salle 1", "Halles du rez-de-chaussée – aile gauche"), R("eg-2", "Salle 2", "Halles du rez-de-chaussée – aile droite")] },
-      { id: "ug", name: "Sous-sol", rooms: [R("ug-1", "Sous-sol", "Halles du sous-sol")] },
+      { id: "ausst", name: "Expositions", rooms: [R("ausst", "Expositions", "Expositions en cours")] },
     ],
   };
 
@@ -428,9 +389,9 @@
     id: "albertina-klosterneuburg", group: "Albertina",
     name: "Albertina Klosterneuburg", short: "Klosterneuburg",
     address: "An der Donau-Au 1, 3400 Klosterneuburg", color: "#7a3b6e",
-    note: "Ouvert de façon saisonnière, vérifiez les dates.",
+    note: "Horaires restreints, vérifiez avant d'y aller.",
     floors: [
-      { id: "eg", name: "Bâtiment", rooms: [R("halle", "Grande halle", "Grande halle d'exposition"), R("depot", "Dépôt", "Dépôt visitable"), R("og", "Étage", "Salles de l'étage")] },
+      { id: "depot", name: "Bâtiment", rooms: [R("depot", "Dépôt", "Dépôt visitable"), R("ausst", "Expositions", "Expositions en cours")] },
     ],
   };
 
@@ -441,50 +402,30 @@
     id: "oberes-belvedere", group: "Belvedere",
     name: "Oberes Belvedere", short: "Haut Belvédère",
     address: "Prinz-Eugen-Straße 27, 1030 Wien", color: "#b08d2c",
-    note: "Les salles sont regroupées par thème ; l'accrochage change de temps en temps.",
+    note: "Découpage par aile indicatif : l'accrochage de la collection change.",
     floors: [
       {
         id: "eg", name: "Rez-de-chaussée", w: 130, h: 40,
-        decor: [label(65, 38, "▲ Entrée (côté jardin)")],
+        decor: [label(65, 38, "▲ Entrée")],
         rooms: [
-          ...row([
-            R("eg-mittel1", "Moyen Âge", "Art médiéval"),
-            R("eg-mittel2", "Gothique", "Gothique tardif"),
-          ], 4, 4, 44, 28),
+          ...row([R("eg-mittel1", "Aile ouest", "Rez-de-chaussée – aile ouest")], 4, 4, 44, 28),
           ...row([R("eg-sala", "Sala terrena", "Sala terrena"), R("eg-carlone", "Carlone", "Carlone-Saal")], 48, 4, 34, 28, true),
-          ...row([
-            R("eg-temp1", "Temporaire", "Exposition temporaire"),
-            R("eg-temp2", "Temporaire 2", "Exposition temporaire (2)"),
-          ], 82, 4, 44, 28),
+          ...row([R("eg-temp1", "Aile est", "Rez-de-chaussée – aile est")], 82, 4, 44, 28),
         ],
       },
       {
-        id: "1og", name: "1er étage – Vienne 1900", w: 130, h: 40,
+        id: "1og", name: "1er étage", w: 130, h: 40,
         rooms: [
-          ...row([
-            R("1-barock", "Baroque", "Baroque autrichien"),
-            R("1-kapelle", "Chapelle", "Chapelle du château"),
-            R("1-paris", "Paris", "Impressionnisme"),
-          ], 4, 4, 44, 32),
+          ...row([R("1-barock", "Aile ouest", "1er étage – aile ouest")], 4, 4, 44, 32),
           ...row([R("1-marmor", "Marmorsaal", "Salle de marbre (Marmorsaal)")], 48, 4, 34, 32),
-          ...row([
-            R("1-klimt", "Klimt", "Klimt (Le Baiser)"),
-            R("1-schiele", "Schiele", "Schiele, Kokoschka, Gerstl"),
-            R("1-1900", "Vienne 1900", "Art viennois autour de 1900"),
-          ], 82, 4, 44, 32),
+          ...row([R("1-klimt", "Aile est", "1er étage – aile est")], 82, 4, 44, 32),
         ],
       },
       {
-        id: "2og", name: "2e étage – XIXe et XXe siècles", w: 130, h: 40,
+        id: "2og", name: "2e étage", w: 130, h: 40,
         rooms: [
-          ...row([
-            R("2-biedermeier", "Biedermeier", "Biedermeier (Waldmüller)"),
-            R("2-romantik", "Romantisme", "Classicisme et romantisme"),
-          ], 4, 4, 60, 32),
-          ...row([
-            R("2-realismus", "Réalisme", "Réalisme, historicisme (Makart)"),
-            R("2-zwischen", "Entre-2-g.", "Entre-deux-guerres"),
-          ], 66, 4, 60, 32),
+          ...row([R("2-biedermeier", "Aile ouest", "2e étage – aile ouest")], 4, 4, 60, 32),
+          ...row([R("2-realismus", "Aile est", "2e étage – aile est")], 66, 4, 60, 32),
         ],
       },
     ],
@@ -496,20 +437,18 @@
     address: "Rennweg 6, 1030 Wien", color: "#b08d2c",
     floors: [
       {
-        id: "eg", name: "Appartements du prince Eugène", w: 130, h: 30,
+        id: "eg", name: "Palais", w: 130, h: 30,
         rooms: row([
-          R("groteske", "Grotesques", "Salle des grotesques"),
-          R("marmorgalerie", "Galerie", "Galerie de marbre"),
-          R("marmorsaal", "Marmorsaal", "Salle de marbre"),
-          R("gold", "Cab. doré", "Cabinet doré"),
-          R("schlaf", "Chambre", "Chambre d'apparat"),
+          R("groteske", "Grotesques", "Salle des grotesques (Groteskensaal)"),
+          R("marmorgalerie", "Galerie", "Galerie de marbre (Marmorgalerie)"),
+          R("gold", "Cab. doré", "Cabinet doré (Goldkabinett)"),
+          R("temp", "Temporaire", "Expositions temporaires"),
         ], 4, 4, 122, 22),
       },
       {
         id: "neben", name: "Bâtiments annexes", rooms: [
-          R("temp", "Temporaire", "Expositions temporaires (Unteres Belvedere)"),
           R("orangerie", "Orangerie", "Orangerie"),
-          R("prunkstall", "Écuries", "Écuries d'apparat (Prunkstall)"),
+          R("prunkstall", "Écuries", "Écuries d'apparat (Prunkstall) – art médiéval"),
         ],
       },
     ],
@@ -520,9 +459,15 @@
     name: "Belvedere 21", short: "Belvedere 21",
     address: "Arsenalstraße 1, 1030 Wien", color: "#b08d2c",
     floors: [
-      { id: "eg", name: "Rez-de-chaussée", rooms: [R("halle", "Grande halle", "Grande halle vitrée"), R("garten", "Sculptures", "Jardin de sculptures")] },
-      { id: "og", name: "Étage", rooms: [R("og", "Étage", "Galerie de l'étage"), R("wotruba", "Wotruba", "Fritz Wotruba")] },
-      { id: "ug", name: "Sous-sol", rooms: [R("ug", "Sous-sol", "Salles du sous-sol"), R("kino", "Kino", "Salle de cinéma / Blickle Kino")] },
+      {
+        id: "eg", name: "Pavillon et jardin", rooms: [
+          R("halle", "Expositions", "Expositions du pavillon"),
+          R("relief", "Relief", "Grand relief de Fritz Wotruba (devant la façade)"),
+          R("garten", "Sculptures", "Jardin de sculptures"),
+          R("kino", "Kino", "Blickle Kino"),
+        ],
+      },
+      { id: "ug", name: "Niveau inférieur", rooms: [R("wotruba", "Wotruba", "Dépôt et salle d'étude Fritz Wotruba")] },
     ],
   };
 
@@ -533,53 +478,35 @@
     id: "mak", group: "MAK",
     name: "MAK – Musée des arts appliqués", short: "MAK",
     address: "Stubenring 5, 1010 Wien", color: "#c0392b",
+    note: "Salles de la collection permanente d'après mak.at ; étage non indiqué.",
     floors: [
       {
-        id: "eg", name: "Rez-de-chaussée – Collection permanente", w: 130, h: 70,
-        decor: [label(65, 68, "▲ Entrée Stubenring")],
-        rooms: [
-          ...row([
-            R("eg-rom", "Moyen Âge", "Roman, gothique, Renaissance"),
-            R("eg-barock", "Baroque", "Baroque, rococo, classicisme"),
-            R("eg-porzellan", "Porcelaine", "Porcelaine et verre"),
-            R("eg-empire", "Empire", "Empire, Biedermeier"),
-          ], 4, 4, 122, 18),
-          ...row([R("eg-saeulenhalle", "Säulenhalle", "Säulenhalle (cour à colonnes)")], 34, 24, 62, 24),
-          ...row([R("eg-teppiche", "Tapis", "Tapis")], 4, 24, 28, 24),
-          ...row([R("eg-histor", "Historicisme", "Historicisme, Art nouveau")], 98, 24, 28, 24),
-          ...row([
-            R("eg-asien", "Asie", "Asie"),
-            R("eg-sonder", "Temporaire", "Expositions temporaires"),
-          ], 4, 50, 122, 14),
+        id: "schau", name: "Collection permanente", rooms: [
+          R("eg-rom", "Renaissance", "Renaissance Barock Rokoko"),
+          R("eg-barock", "Baroque", "Barock Rokoko Klassizismus"),
+          R("eg-empire", "Empire", "Empire Biedermeier"),
+          R("eg-histor", "Historicisme", "Historismus Jugendstil"),
+          R("1-wien1900", "Vienne 1900", "Wien 1900"),
+          R("eg-teppiche", "Tapis", "Textiles et tapis"),
+          R("eg-asien", "Asie", "Asien"),
+          R("ug-design", "Design Labor", "MAK Design Labor"),
         ],
       },
-      {
-        id: "1og", name: "1er étage", rooms: [
-          R("1-wien1900", "Vienne 1900", "Vienne 1900 – design, Wiener Werkstätte"),
-          R("1-sonder", "Temporaire", "Expositions temporaires"),
-        ],
-      },
-      {
-        id: "ug", name: "Sous-sol", rooms: [
-          R("ug-design", "Design Labor", "MAK Design Labor (cuisine de Francfort…)"),
-          R("ug-gegenwart", "Contemporain", "Art contemporain"),
-          R("ug-studien", "Collection d'étude", "Collection d'étude"),
-        ],
-      },
+      { id: "sonder", name: "Expositions temporaires", rooms: [R("eg-sonder", "Temporaires", "Expositions temporaires")] },
     ],
   };
 
   const geymueller = {
     id: "geymueller", group: "MAK",
     name: "MAK Geymüllerschlössel", short: "Geymüllerschlössel",
-    address: "Khevenhüllerstraße 2, 1180 Wien", color: "#c0392b",
-    note: "Ouvert de mai à novembre, généralement le week-end.",
+    address: "Pötzleinsdorfer Straße 102, 1180 Wien", color: "#c0392b",
+    note: "Ouvert de mai à novembre, le week-end.",
     floors: [
       {
         id: "haus", name: "Villa", rooms: [
-          R("biedermeier", "Biedermeier", "Intérieurs Biedermeier"),
-          R("uhren", "Horloges", "Collection d'horloges Sobek"),
-          R("garten", "Jardin", "Jardin"),
+          R("biedermeier", "Mobilier", "Mobilier Empire et Biedermeier"),
+          R("uhren", "Horloges", "Horloges de la collection Sobek"),
+          R("garten", "Parc", "Parc et sculptures contemporaines"),
         ],
       },
     ],
@@ -590,13 +517,13 @@
   // ---------------------------------------------------------------------
   const mumokLevels = [
     ["l4", "Niveau 4"], ["l3", "Niveau 3"], ["l2", "Niveau 2"], ["l1", "Niveau 1"],
-    ["l0", "Niveau 0 – Entrée"], ["lm1", "Niveau -1"], ["lm2", "Niveau -2"], ["lm3", "Niveau -3"],
+    ["l0", "Niveau 0"], ["lm1", "Niveau -1"], ["lm2", "Niveau -2"], ["lm3", "Niveau -3"],
   ];
   const mumok = {
     id: "mumok", group: "mumok",
     name: "mumok – Musée d'art moderne", short: "mumok",
     address: "MuseumsQuartier, Museumsplatz 1, 1070 Wien", color: "#555",
-    note: "Le mumok s'organise en niveaux ; les expositions changent régulièrement.",
+    note: "Huit niveaux reliés par des ascenseurs vitrés ; les expositions changent régulièrement.",
     floors: [
       {
         id: "coupe", name: "Coupe du bâtiment (niveaux)", w: 100, h: 8 * 11 + 6,
@@ -616,9 +543,9 @@
       {
         id: "saal", name: "Prunksaal", w: 130, h: 40,
         rooms: [
-          ...row([R("krieg", "Aile Guerre", "Aile de la Guerre (Kriegsflügel)")], 4, 8, 45, 24),
-          ...row([R("oval", "Coupole", "Ovale central (coupole, statue de Charles VI)")], 49, 4, 32, 32),
-          ...row([R("frieden", "Aile Paix", "Aile de la Paix (Friedensflügel)")], 81, 8, 45, 24),
+          ...row([R("krieg", "Partie gauche", "Partie gauche de la salle")], 4, 8, 45, 24),
+          ...row([R("oval", "Ovale", "Ovale central (coupole, statue de Charles VI)")], 49, 4, 32, 32),
+          ...row([R("frieden", "Partie droite", "Partie droite de la salle")], 81, 8, 45, 24),
         ],
       },
     ],
@@ -627,22 +554,16 @@
   const oenbMuseen = {
     id: "oenb-museen", group: "Österreichische Nationalbibliothek",
     name: "Musées de la Nationalbibliothek", short: "Musées ÖNB",
-    address: "Herrengasse 9 / Johannesgasse 6 / Heldenplatz, 1010 Wien", color: "#1f5f8b",
+    address: "Neue Burg · Herrengasse 9 · Grillparzerhaus, 1010 Wien", color: "#1f5f8b",
     floors: [
       { id: "papyrus", name: "Papyrusmuseum (Neue Burg)", rooms: [R("papyrus", "Papyrus", "Papyrusmuseum")] },
       {
         id: "mollard", name: "Palais Mollard (Herrengasse 9)", rooms: [
           R("globen", "Globes", "Globenmuseum"),
-          R("esperanto", "Esperanto", "Esperantomuseum et langues construites"),
+          R("esperanto", "Esperanto", "Esperantomuseum"),
         ],
       },
-      {
-        id: "literatur", name: "Literaturmuseum (Grillparzerhaus)", rooms: [
-          R("lit-1", "Étage 1", "Literaturmuseum – 1er niveau"),
-          R("lit-2", "Étage 2", "Literaturmuseum – 2e niveau"),
-          R("lit-3", "Étage 3", "Literaturmuseum – 3e niveau"),
-        ],
-      },
+      { id: "literatur", name: "Literaturmuseum (Grillparzerhaus)", rooms: [R("lit-1", "Littérature", "Literaturmuseum")] },
     ],
   };
 
@@ -651,13 +572,8 @@
     name: "Haus der Geschichte Österreich", short: "hdgö",
     address: "Neue Burg, Heldenplatz, 1010 Wien", color: "#1f5f8b",
     floors: [
-      {
-        id: "ausst", name: "Exposition (Neue Burg)", rooms: [
-          R("altan", "Balcon", "Hitler-Balkon / Altan (vue)"),
-          R("haupt", "Permanente", "Exposition principale – histoire depuis 1918"),
-          R("sonder", "Temporaire", "Exposition temporaire"),
-        ],
-      },
+      { id: "mezz", name: "Mezzanine", rooms: [R("haupt", "Neue Zeiten", "Exposition principale « Neue Zeiten. Österreich seit 1918 »")] },
+      { id: "1og", name: "1er étage", rooms: [R("sonder", "Temporaire", "Expositions temporaires")] },
     ],
   };
 
@@ -668,31 +584,20 @@
     id: "tmw", group: "Technisches Museum Wien",
     name: "Technisches Museum Wien", short: "TMW",
     address: "Mariahilfer Straße 212, 1140 Wien", color: "#d35400",
-    note: "Grand hall central sur plusieurs niveaux ; noms d'expositions indicatifs.",
+    note: "Expositions permanentes d'après technischesmuseum.at ; étage non indiqué.",
     floors: [
       {
-        id: "eg", name: "Rez-de-chaussée", w: 130, h: 50,
-        rooms: [
-          ...row([R("eg-natur", "Nature & connaissance", "Natur und Erkenntnis")], 4, 4, 36, 42),
-          ...row([R("eg-halle", "Grand hall", "Grand hall central")], 40, 4, 50, 42),
-          ...row([R("eg-schwer", "Industrie lourde", "Schwerindustrie"), R("eg-energie", "Énergie", "Energie")], 90, 4, 36, 42, true),
+        id: "dauer", name: "Expositions permanentes", rooms: [
+          R("material", "Materialwelten", "Materialwelten (mondes des matériaux)"),
+          R("alltag", "Alltag", "Alltag (la technique au quotidien)"),
+          R("mobil", "Mobilität", "Mobilität (mobilité)"),
+          R("arbeit", "In Arbeit", "In Arbeit (le travail)"),
+          R("wissenschaft", "Wissenschaft", "Wissenschaft im Wandel (la science en mutation)"),
+          R("klima", "Klima", "Klima. Wissen. Handeln! (climat)"),
+          R("lok", "LOK.erlebnis", "LOK.erlebnis (collection ferroviaire)"),
+          R("minix", "miniXplore", "miniXplore (enfants de 3 à 8 ans)"),
         ],
       },
-      {
-        id: "1og", name: "1er étage", rooms: [
-          R("1-alltag", "Quotidien", "Alltag – eine Gebrauchsanweisung"),
-          R("1-mobil", "Mobilité", "Mobilität"),
-          R("1-arbeit", "Travail", "In Arbeit"),
-        ],
-      },
-      {
-        id: "2og", name: "2e étage", rooms: [
-          R("2-medien", "Médias", "medien.welten"),
-          R("2-musik", "Musique", "Instruments de musique"),
-          R("2-weiter", "Futur", "weiter_gedacht_ (le futur)"),
-        ],
-      },
-      { id: "kinder", name: "Pour les enfants", rooms: [R("mini", "das mini", "das mini (0–6 ans)")] },
     ],
   };
 

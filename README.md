@@ -11,6 +11,11 @@ cocher les salles déjà vues dans les musées inclus dans la
   dans la liste permet d'ajouter une note ou de changer la date.
 - Boutons pour cocher d'un coup toute une partie (ex. Kunstkammer), tout un
   étage ou tout le musée, avec « Annuler ».
+- **Guide de visite** : présentation de chaque musée, textes par partie et par
+  salle avec les œuvres à voir. Le bouton *i* d'une salle ouvre sa fiche ; un
+  point bleu sur le plan signale les salles qui ont un texte. Tous les textes
+  viennent uniquement des sites officiels des musées, cités sous chaque texte
+  (`js/guides.js`).
 - Liste des salles avec filtre « À voir » pour préparer la prochaine visite.
 - Progression par étage, par musée et globale.
 - Bouton pour agrandir le plan sur petit écran.
@@ -70,5 +75,6 @@ puis ouvrez http://localhost:8000.
 
 - `index.html`, `styles.css` – page et style (thème clair/sombre automatique)
 - `js/data.js` – musées, étages, salles et coordonnées des plans
+- `js/guides.js` – textes du guide, avec leurs sources officielles
 - `js/app.js` – interface, plans SVG, sauvegarde
 - `sw.js`, `manifest.webmanifest`, icônes – fonctionnement hors-ligne / installation

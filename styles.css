@@ -14,6 +14,7 @@
   --seen-ink: #ffffff;
   --court: #ebe7de;
   --danger: #c0392b;
+  --accent-ink: #2f5d8a;
   --shadow: 0 1px 2px rgba(0, 0, 0, .06), 0 2px 8px rgba(0, 0, 0, .05);
   color-scheme: light;
 }
@@ -30,6 +31,7 @@
     --partial-fill: #b8902b;
     --partial-stroke: #e0b648;
     --seen-fill: #2f7d50;
+    --accent-ink: #8fb8e0;
     --seen-stroke: #55b47d;
     --court: #1a2025;
     --shadow: none;
@@ -47,6 +49,7 @@
   --partial-fill: #b8902b;
   --partial-stroke: #e0b648;
   --seen-fill: #2f7d50;
+  --accent-ink: #8fb8e0;
   --seen-stroke: #55b47d;
   --court: #1a2025;
   --shadow: none;
@@ -229,6 +232,34 @@ button { font: inherit; color: inherit; }
 .museum-actions { margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--line); }
 .btn.wide { width: 100%; }
 .empty { color: var(--muted); text-align: center; padding: 16px; }
+
+/* Guide */
+.guide { display: flex; flex-direction: column; gap: 8px; }
+.guide-text { margin: 0; font-size: .92rem; line-height: 1.5; }
+.guide-see { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px; }
+.guide-see li {
+  font-size: .8rem; padding: 3px 9px; border-radius: 99px;
+  background: var(--bg); border: 1px solid var(--line);
+}
+.guide-src { margin: 0; font-size: .75rem; color: var(--muted); overflow-wrap: anywhere; }
+.guide-src a { color: inherit; }
+.guide-card, .guide-inline {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+}
+.guide-card { margin-top: 14px; }
+.guide-inline { margin: 0 0 8px; }
+.guide-card summary, .guide-inline summary {
+  cursor: pointer; padding: 10px 14px; font-weight: 600; font-size: .92rem; list-style-position: inside;
+  -webkit-tap-highlight-color: transparent; border-radius: 12px;
+}
+.guide-card summary:focus-visible, .guide-inline summary:focus-visible { outline: 2px solid var(--accent-ink); }
+.guide-inline summary { font-weight: 500; font-size: .85rem; color: var(--muted); padding: 8px 12px; }
+.guide-card .guide, .guide-inline .guide { padding: 0 14px 12px; }
+.room-guide { font-size: .8rem; color: var(--accent-ink); }
+.room-edit.has-guide { color: var(--accent-ink); font-family: Georgia, "Times New Roman", serif; font-style: italic; font-weight: 700; font-size: 1.2rem; }
+.map .guide-dot { fill: var(--accent-ink); pointer-events: none; }
+.map .cell.seen .guide-dot { fill: var(--seen-ink); }
+.sheet .guide { padding: 12px; background: var(--bg); border-radius: 12px; }
 
 /* Fiche (bottom sheet) */
 .sheet {

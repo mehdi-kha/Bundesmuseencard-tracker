@@ -4,6 +4,7 @@
   const STORAGE_KEY = "bmc-tracker-v1";
   const MUSEUMS = window.MUSEUMS;
   const SVG_NS = "http://www.w3.org/2000/svg";
+  const GUIDES = window.GUIDES || {};
 
   // ---------------------------------------------------------------------
   // État persistant
@@ -127,6 +128,36 @@
     const bar = h("div", { class: "bar", role: "progressbar", "aria-valuemin": 0, "aria-valuemax": 100, "aria-valuenow": p.pct });
     bar.append(h("span", { class: "bar-seen", style: `width:${p.pct}%` }));
     return bar;
+  }
+
+  // ---------------------------------------------------------------------
+  // Guide de visite (textes tirés des sites officiels, voir js/guides.js)
+  // ---------------------------------------------------------------------
+  const guideOf = (museum) => GUIDES[museum.id] || {};
+  const roomGuide = (museum, room) => (guideOf(museum).rooms || {})[room.id];
+  const sectionGuide = (museum, name) => (guideOf(museum).sections || {})[name];
+
+  function sourceLinks(src) {
+    if (!src || !src.length) return null;
+    const seen = {};
+    const links = src.map((u) => {
+      let label = u;
+      try { label = new URL(u).hostname.replace(/^www\./, ""); } catch (e) { /* lien brut */ }
+      seen[label] = (seen[label] || 0) + 1;
+      return h("a", { href: u, target: "_blank", rel: "noopener" }, seen[label] > 1 ? `${label} (${seen[label]})` : label);
+    });
+    return h("p", { class: "guide-src" }, "Source officielle : ",
+      links.flatMap((a, i) => (i ? [", ", a] : [a])));
+  }
+
+  function guideBlock(entry) {
+    return h("div", { class: "guide" },
+      h("p", { class: "guide-text" }, entry.text),
+      entry.see && entry.see.length
+        ? h("ul", { class: "guide-see", "aria-label": "À voir" }, entry.see.map((x) => h("li", null, x)))
+        : null,
+      sourceLinks(entry.src),
+    );
   }
 
   let toastTimer;
@@ -263,6 +294,11 @@
       ),
       tabs,
       h("main", { class: "museum" },
+        guideOf(museum).intro
+          ? h("details", { class: "guide-card" },
+              h("summary", null, "Guide du musée"),
+              guideBlock(guideOf(museum).intro))
+          : null,
         h("section", { class: "floor" },
           h("div", { class: "floor-head" },
             h("h2", null, floor.name),
@@ -286,6 +322,11 @@
                   h("h3", null, g.name, h("small", null, ` ${progress(museum, g.rooms).seen}/${g.rooms.length}`)),
                   bulkButton(museum, g.rooms, "la partie", "btn small ghost"),
                 ) : null,
+                g.name && sectionGuide(museum, g.name)
+                  ? h("details", { class: "guide-inline" },
+                      h("summary", null, "Guide de cette partie"),
+                      guideBlock(sectionGuide(museum, g.name)))
+                  : null,
                 h("ul", { class: "rooms" }, g.shown.map((r) => roomRow(museum, floor, r, shortTitle(r, g)))),
               ))
             : h("p", { class: "empty" }, listFilter === "todo" ? "Tout est vu à cet étage 🎉" : "Aucune salle."),
@@ -328,6 +369,7 @@
     const seen = isSeen(museum, room);
     const entry = state.rooms[key(museum, room)] || {};
     const meta = [seen && entry.d ? `Vue le ${formatDate(entry.d)}` : null, entry.n].filter(Boolean).join(" · ");
+    const guide = roomGuide(museum, room);
     return h("li", { class: "room" + (seen ? " seen" : "") },
       h("button", {
         class: "room-toggle",
@@ -338,10 +380,17 @@
         h("span", { class: "check", "aria-hidden": "true" }, seen ? "✓" : ""),
         h("span", { class: "room-text" },
           h("span", { class: "room-title" }, title || room.title, room.custom ? h("em", null, " (perso)") : null),
+          guide ? h("span", { class: "room-guide" }, guide.see && guide.see.length
+            ? `À voir : ${guide.see.slice(0, 2).join(", ")}${guide.see.length > 2 ? ` +${guide.see.length - 2}` : ""}`
+            : "Guide disponible") : null,
           meta ? h("span", { class: "room-meta" }, meta) : null,
         ),
       ),
-      h("button", { class: "room-edit", "aria-label": `Note et date : ${room.title}`, onclick: () => openRoom(museum, floor, room) }, "✎"),
+      h("button", {
+        class: "room-edit" + (guide ? " has-guide" : ""),
+        "aria-label": `${guide ? "Guide, note et date" : "Note et date"} : ${room.title}`,
+        onclick: () => openRoom(museum, floor, room),
+      }, guide ? "i" : "✎"),
     );
   }
 
@@ -412,6 +461,9 @@
       const fs = Math.min(5, it.h * 0.42, (it.w * 1.7) / Math.max(text.length, 2));
       const t = s("text", { x: it.x + it.w / 2, y: it.y + it.h / 2, "font-size": fs.toFixed(2) }, text);
       g.append(t);
+      if (roomGuide(museum, it.r) && it.h > 6) {
+        g.append(s("circle", { cx: it.x + 2.2, cy: it.y + 2.2, r: 0.9, class: "guide-dot" }));
+      }
       if (seen && it.h > 9) {
         g.append(s("text", { x: it.x + it.w - 2, y: it.y + 3.2, class: "tick", "font-size": 3 }, "✓"));
       }
@@ -532,6 +584,7 @@
         h("div", { class: "sheet-grip" }),
         h("p", { class: "sheet-kicker" }, `${museum.short} · ${floor.name} · ${seen ? "vue" : "pas vue"}`),
         h("h3", null, room.title),
+        roomGuide(museum, room) ? guideBlock(roomGuide(museum, room)) : null,
         seen ? h("label", { class: "field" }, h("span", null, "Date de visite"), date) : null,
         h("label", { class: "field" }, h("span", null, "Note"), note),
         h("div", { class: "sheet-actions" },
